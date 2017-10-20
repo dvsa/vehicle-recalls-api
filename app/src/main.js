@@ -10,6 +10,7 @@ const logFormat = morganJson(':method :url :status :res[content-length] bytes :r
 app.use(morgan(logFormat));
 
 app.get('/', (req, res) => {
+  
   res.status(200).send({
     status_description: 'Recall Outstanding',
     vin_recall_status: 'BRAKES',
