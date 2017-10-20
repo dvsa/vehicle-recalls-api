@@ -1,0 +1,59 @@
+{
+  "name": "vehicleRecallLambda",
+  "version": "0.1.0",
+  "description": "Vehicle recall lambda responsible for verification if car has outstanding recall.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "nodemon local.js",
+    "test": "nyc mocha --exit",
+    "test:watch": "nodemon --exec \"npm run test\"",
+    "retire": "retire -n -p",
+    "lint": "eslint .",
+    "lint:watch": "nodemon --exec \"npm run lint\"",
+    "prod": "npm prune --production && npm install --production",
+    "report": "nyc report --reporter=html",
+    "build": "mkdir -p ./dist && npm run prod && zip -r ./dist/vehicleRecallLambda-${BUILDSTAMP}.zip node_modules/ src/"
+  },
+  "author": "Marcin Duszynski",
+  "url": "https://github.com/dvsa/vehicle-recalls-api",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dvsa/vehicle-recalls-api.git"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "morgan": "^1.9.0",
+    "morgan-json": "^1.1.0",
+    "serverless-http": "^1.5.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "eslint": "^4.8.0",
+    "eslint-config-airbnb": "^16.0.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.4.0",
+    "mocha": "^4.0.1",
+    "nodemon": "^1.12.1",
+    "nyc": "^11.2.1",
+    "retire": "^1.4.0"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "per-file": true,
+    "lines": 90,
+    "statements": 90,
+    "functions": 90,
+    "branches": 90,
+    "include": [
+      "src/**/*.js"
+    ],
+    "extension": [
+      ".js"
+    ],
+    "cache": true,
+    "all": true
+  }
+}
