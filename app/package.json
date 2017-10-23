@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "nodemon local.js",
-    "test": "nyc mocha --exit",
+    "test": "nyc mocha \"test/**/*.test.js\" --exit",
     "test:watch": "nodemon --exec \"npm run test\"",
     "retire": "retire -n -p",
     "lint": "eslint .",
