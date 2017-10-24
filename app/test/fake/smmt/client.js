@@ -9,7 +9,7 @@ exports.vincheck = (marque, vin) => {
         success: true,
         description: 'Recall Outstanding',
         status: 'BRAKES',
-        last_update: '19022015',
+        lastUpdate: '19022015',
       };
     }
   } else if (marque === 'BMW') {
@@ -18,7 +18,7 @@ exports.vincheck = (marque, vin) => {
         success: true,
         description: 'No Recall Outstanding',
         status: '',
-        last_update: '19022015',
+        lastUpdate: '19022015',
       };
     }
   } else {
