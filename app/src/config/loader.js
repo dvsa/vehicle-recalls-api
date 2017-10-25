@@ -1,6 +1,4 @@
-exports.load = () => {
-  return {
-    smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
-    smmtApiKey: 'localApiKey',
-  }
-}
+exports.load = () => ({
+  smmtVincheckUri: process.env.SMMT_API_URI,
+  smmtApiKey: process.env.SMMT_API_KEY,
+});

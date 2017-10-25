@@ -13,7 +13,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtApiKey: 'wrongApiKey',
     };
 
-    const result = smmtClient.vincheck(marque, vin, () => {}, config);
+    const result = smmtClient.vincheck(marque, vin, config);
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
@@ -31,7 +31,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtApiKey: 'localApiKey',
     };
 
-    const result = smmtClient.vincheck(marque, vin, () => {}, config);
+    const result = smmtClient.vincheck(marque, vin, config);
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
@@ -49,7 +49,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtApiKey: 'localApiKey',
     };
 
-    const result = smmtClient.vincheck(marque, vin, () => {}, config);
+    const result = smmtClient.vincheck(marque, vin, config);
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
@@ -67,7 +67,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtApiKey: 'localApiKey',
     };
 
-    const result = smmtClient.vincheck(marque, vin, () => {}, config);
+    const result = smmtClient.vincheck(marque, vin, config);
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
@@ -86,7 +86,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         smmtApiKey: 'localApiKey',
       };
 
-      const result = smmtClient.vincheck(marque, vin, () => {}, config);
+      const result = smmtClient.vincheck(marque, vin, config);
       result.then((recall) => {
         recall.should.have.property('success').eql(true);
         recall.should.have.property('description').eql('Recall Outstanding');
@@ -105,7 +105,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         smmtApiKey: 'localApiKey',
       };
 
-      const result = smmtClient.vincheck(marque, vin, () => {}, config);
+      const result = smmtClient.vincheck(marque, vin, config);
       result.then((recall) => {
         recall.should.have.property('success').eql(true);
         recall.should.have.property('description').eql('No Recall Outstanding');
@@ -124,7 +124,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         smmtApiKey: 'localApiKey',
       };
 
-      const result = smmtClient.vincheck(marque, vin, () => {}, config);
+      const result = smmtClient.vincheck(marque, vin, config);
       result.then((recall) => {
         recall.should.have.property('success').eql(false);
         recall.should.have.property('errors');

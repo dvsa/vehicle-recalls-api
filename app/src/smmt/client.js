@@ -17,7 +17,7 @@ function isMarqueCorrect(marque) {
   return false;
 }
 
-function getSmmtResponse(marque, vin, callback, config) {
+function getSmmtResponse(marque, vin, config) {
   return request({
     method: 'POST',
     url: config.smmtVincheckUri,
@@ -61,12 +61,11 @@ function getSmmtResponse(marque, vin, callback, config) {
       result.status = recall.vin_recall_status;
       result.lastUpdate = recall.last_update;
 
-      // callback(null, result);
       return Promise.resolve(result);
     });
 }
 
-exports.vincheck = (marque, vin, callback, config) => {
+exports.vincheck = (marque, vin, config) => {
   const errors = [];
   let validVin = true;
   let validMarque = true;
@@ -82,9 +81,8 @@ exports.vincheck = (marque, vin, callback, config) => {
   }
 
   if (validVin && validMarque) {
-    return getSmmtResponse(marque, vin, callback, config);
+    return getSmmtResponse(marque, vin, config);
   }
 
   return Promise.resolve({ success: false, errors });
-  // callback(null, { success: false, errors });
 };

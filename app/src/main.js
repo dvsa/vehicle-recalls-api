@@ -13,11 +13,11 @@ const logFormat = morganJson(':method :url :status :res[content-length] bytes :r
 app.use(morgan(logFormat));
 
 app.get('/recalls', (req, res) => {
-  const { marque, vin } = req.query;
+  const { make, vin } = req.query;
 
-  if (marque && vin) {
-    const result = smmtClient.vincheck(marque, vin, () => {}, config);
-    
+  if (make && vin) {
+    const result = smmtClient.vincheck(make, vin, config);
+
     result.then((recall) => {
       if (recall.success) {
         res.status(200)
