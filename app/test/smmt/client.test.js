@@ -1,5 +1,4 @@
 const chai = require('chai');
-const async = require('async');
 
 chai.should();
 
@@ -14,15 +13,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtApiKey: 'wrongApiKey',
     };
 
-    async.parallel([
-      (callback) => {
-        smmtClient.vincheck(marque, vin, callback, config);
-      },
-    ], (err, result) => {
-      if (err) done(err);
-
-      const recall = result.pop();
-
+    const result = smmtClient.vincheck(marque, vin, () => {}, config);
+    result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
       recall.errors.should.be.a('array').that.have.same.members(['Unauthorized']);
@@ -39,13 +31,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtApiKey: 'localApiKey',
     };
 
-    async.parallel([
-      (callback) => {
-        smmtClient.vincheck(marque, vin, callback, config);
-      },
-    ], (err, result) => {
-      const recall = result.pop();
-
+    const result = smmtClient.vincheck(marque, vin, () => {}, config);
+    result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
       recall.errors.should.be.a('array').that.have.same.members(['Invalid Marque', 'Invalid VIN']);
@@ -62,13 +49,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtApiKey: 'localApiKey',
     };
 
-    async.parallel([
-      (callback) => {
-        smmtClient.vincheck(marque, vin, callback, config);
-      },
-    ], (err, result) => {
-      const recall = result.pop();
-
+    const result = smmtClient.vincheck(marque, vin, () => {}, config);
+    result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
       recall.errors.should.be.a('array').that.have.same.members(['Invalid Marque']);
@@ -85,13 +67,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtApiKey: 'localApiKey',
     };
 
-    async.parallel([
-      (callback) => {
-        smmtClient.vincheck(marque, vin, callback, config);
-      },
-    ], (err, result) => {
-      const recall = result.pop();
-
+    const result = smmtClient.vincheck(marque, vin, () => {}, config);
+    result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
       recall.errors.should.be.a('array').that.have.same.members(['Invalid VIN']);
@@ -109,13 +86,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         smmtApiKey: 'localApiKey',
       };
 
-      async.parallel([
-        (callback) => {
-          smmtClient.vincheck(marque, vin, callback, config);
-        },
-      ], (err, result) => {
-        const recall = result.pop();
-
+      const result = smmtClient.vincheck(marque, vin, () => {}, config);
+      result.then((recall) => {
         recall.should.have.property('success').eql(true);
         recall.should.have.property('description').eql('Recall Outstanding');
         recall.should.have.property('status').eql('BRAKES');
@@ -133,15 +105,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         smmtApiKey: 'localApiKey',
       };
 
-      async.parallel([
-        (callback) => {
-          smmtClient.vincheck(marque, vin, callback, config);
-        },
-      ], (err, result) => {
-        if (err) done(err);
-
-        const recall = result.pop();
-
+      const result = smmtClient.vincheck(marque, vin, () => {}, config);
+      result.then((recall) => {
         recall.should.have.property('success').eql(true);
         recall.should.have.property('description').eql('No Recall Outstanding');
         recall.should.have.property('status').eql('');
@@ -159,13 +124,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         smmtApiKey: 'localApiKey',
       };
 
-      async.parallel([
-        (callback) => {
-          smmtClient.vincheck(marque, vin, callback, config);
-        },
-      ], (err, result) => {
-        const recall = result.pop();
-
+      const result = smmtClient.vincheck(marque, vin, () => {}, config);
+      result.then((recall) => {
         recall.should.have.property('success').eql(false);
         recall.should.have.property('errors');
         recall.errors.should.be.a('array').that.have.same.members(['Bad Request - Invalid Marque']);

@@ -2,7 +2,6 @@ const serverless = require('serverless-http');
 const express = require('express');
 const morgan = require('morgan');
 const morganJson = require('morgan-json');
-const async = require('async');
 
 const smmtClient = require('./smmt/client');
 const config = require('./config/loader').load();
@@ -17,13 +16,9 @@ app.get('/recalls', (req, res) => {
   const { marque, vin } = req.query;
 
   if (marque && vin) {
-    async.parallel([
-      (callback) => {
-        smmtClient.vincheck(marque, vin, callback, config);
-      },
-    ], (err, result) => {
-      const recall = result.pop();
-
+    const result = smmtClient.vincheck(marque, vin, () => {}, config);
+    
+    result.then((recall) => {
       if (recall.success) {
         res.status(200)
           .send({

@@ -18,14 +18,7 @@ function isMarqueCorrect(marque) {
 }
 
 function getSmmtResponse(marque, vin, callback, config) {
-  const result = {
-    success: false,
-    errors: [],
-    description: '',
-    status: '',
-    lastUpdate: '',
-  };
-  request({
+  return request({
     method: 'POST',
     url: config.smmtVincheckUri,
     json: true,
@@ -37,6 +30,13 @@ function getSmmtResponse(marque, vin, callback, config) {
   })
     .then((recall) => {
       console.info(`SMMT status -> ${recall.status}`);
+      const result = {
+        success: false,
+        errors: [],
+        description: '',
+        status: '',
+        lastUpdate: '',
+      };
 
       switch (recall.status) {
         case responseCode.smmtInvalidApiKey:
@@ -61,7 +61,8 @@ function getSmmtResponse(marque, vin, callback, config) {
       result.status = recall.vin_recall_status;
       result.lastUpdate = recall.last_update;
 
-      callback(null, result);
+      // callback(null, result);
+      return Promise.resolve(result);
     });
 }
 
@@ -81,8 +82,9 @@ exports.vincheck = (marque, vin, callback, config) => {
   }
 
   if (validVin && validMarque) {
-    getSmmtResponse(marque, vin, callback, config);
-  } else {
-    callback(null, { success: false, errors });
+    return getSmmtResponse(marque, vin, callback, config);
   }
+
+  return Promise.resolve({ success: false, errors });
+  // callback(null, { success: false, errors });
 };
