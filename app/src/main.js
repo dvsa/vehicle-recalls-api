@@ -13,7 +13,7 @@ const logFormat = morganJson(':method :url :status :res[content-length] bytes :r
 app.use(morgan(logFormat));
 
 const config = {
-  smmtVincheckUri: 'https://jabishe2yh.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
+  smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
   smmtApiKey: 'localApiKey',
 };
 

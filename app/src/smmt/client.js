@@ -66,13 +66,6 @@ function getSmmtResponse(marque, vin, callback, config) {
       result.lastUpdate = recall.last_update;
 
       callback(null, result);
-    })
-    .catch((error) => {
-      console.info(`>>> ERROR: ${error}`);
-      result.success = false;
-      result.errors.push(error);
-
-      callback(error, result);
     });
 }
 
