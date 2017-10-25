@@ -1,9 +1,5 @@
-const rp = require('request-promise');
-
-const smmtInvalidApiKeyCode = 401;
-const smmtInvalidMarqueCode = 402;
-const smmtNoRecallCode = 200;
-const smmtRecallCode = 201;
+const request = require('request-promise-native');
+const responseCode = require('./responseCode').code;
 
 function isVinNumberCorrect(vin) {
   const minVinLength = 5;
@@ -29,7 +25,7 @@ function getSmmtResponse(marque, vin, callback, config) {
     status: '',
     lastUpdate: '',
   };
-  rp({
+  request({
     method: 'POST',
     url: config.smmtVincheckUri,
     json: true,
@@ -43,18 +39,18 @@ function getSmmtResponse(marque, vin, callback, config) {
       console.info(`SMMT status -> ${recall.status}`);
 
       switch (recall.status) {
-        case smmtInvalidApiKeyCode:
+        case responseCode.smmtInvalidApiKey:
           result.success = false;
           result.errors.push(recall.status_description);
           break;
-        case smmtInvalidMarqueCode:
+        case responseCode.smmtInvalidMarque:
           result.success = false;
           result.errors.push(recall.status_description);
           break;
-        case smmtNoRecallCode:
+        case responseCode.smmtNoRecall:
           result.success = true;
           break;
-        case smmtRecallCode:
+        case responseCode.smmtRecall:
           result.success = true;
           break;
         default:

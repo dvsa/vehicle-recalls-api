@@ -5,17 +5,13 @@ const morganJson = require('morgan-json');
 const async = require('async');
 
 const smmtClient = require('./smmt/client');
+const config = require('./config/loader').load();
 
 const app = express();
 app.disable('x-powered-by');
 
 const logFormat = morganJson(':method :url :status :res[content-length] bytes :response-time ms');
 app.use(morgan(logFormat));
-
-const config = {
-  smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
-  smmtApiKey: 'localApiKey',
-};
 
 app.get('/recalls', (req, res) => {
   const { marque, vin } = req.query;
