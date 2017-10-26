@@ -1,25 +1,31 @@
 const chai = require('chai');
+const fakeRestClient = require('../fake/fakeRestClient');
+const fakeVincheck = require('../fake/smmt/vincheck');
+
+const smmtClientFactory = require('../../src/smmt/client');
 
 chai.should();
 
-const smmtClient = require('../../src/smmt/client');
 
 describe('SMMT Client -> When vincheck function was executed', () => {
   it('and api key is incorrect then "Unauthorized" error and success equal false must be returned.', (done) => {
     const marque = 'RENAULT';
     const vin = 'AISXXXTEST1239617';
     const config = {
-      smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
+      smmtVincheckUri: fakeRestClient.validSmmtUri,
       smmtApiKey: 'wrongApiKey',
     };
+    const smmtClient = smmtClientFactory.create(fakeRestClient, config);
 
-    const result = smmtClient.vincheck(marque, vin, config);
+    const result = smmtClient.vincheck(marque, vin);
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
       recall.errors.should.be.a('array').that.have.same.members(['Unauthorized']);
 
       done();
+    }).catch((error) => {
+      done(error);
     });
   });
 
@@ -27,17 +33,20 @@ describe('SMMT Client -> When vincheck function was executed', () => {
     const marque = undefined;
     const vin = undefined;
     const config = {
-      smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
-      smmtApiKey: 'localApiKey',
+      smmtVincheckUri: fakeRestClient.validSmmtUri,
+      smmtApiKey: fakeVincheck.validSmmtKey,
     };
+    const smmtClient = smmtClientFactory.create(fakeRestClient, config);
 
-    const result = smmtClient.vincheck(marque, vin, config);
+    const result = smmtClient.vincheck(marque, vin);
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
       recall.errors.should.be.a('array').that.have.same.members(['Invalid Marque', 'Invalid VIN']);
 
       done();
+    }).catch((error) => {
+      done(error);
     });
   });
 
@@ -45,9 +54,10 @@ describe('SMMT Client -> When vincheck function was executed', () => {
     const marque = undefined;
     const vin = '123123123ASD';
     const config = {
-      smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
-      smmtApiKey: 'localApiKey',
+      smmtVincheckUri: fakeRestClient.validSmmtUri,
+      smmtApiKey: fakeVincheck.validSmmtKey,
     };
+    const smmtClient = smmtClientFactory.create(fakeRestClient, config);
 
     const result = smmtClient.vincheck(marque, vin, config);
     result.then((recall) => {
@@ -56,6 +66,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       recall.errors.should.be.a('array').that.have.same.members(['Invalid Marque']);
 
       done();
+    }).catch((error) => {
+      done(error);
     });
   });
 
@@ -63,17 +75,20 @@ describe('SMMT Client -> When vincheck function was executed', () => {
     const marque = 'RENAULT';
     const vin = undefined;
     const config = {
-      smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
-      smmtApiKey: 'localApiKey',
+      smmtVincheckUri: fakeRestClient.validSmmtUri,
+      smmtApiKey: fakeVincheck.validSmmtKey,
     };
+    const smmtClient = smmtClientFactory.create(fakeRestClient, config);
 
-    const result = smmtClient.vincheck(marque, vin, config);
+    const result = smmtClient.vincheck(marque, vin);
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
       recall.errors.should.be.a('array').that.have.same.members(['Invalid VIN']);
 
       done();
+    }).catch((error) => {
+      done(error);
     });
   });
 
@@ -82,11 +97,12 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       const marque = 'RENAULT';
       const vin = 'AISXXXTEST1239617';
       const config = {
-        smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
-        smmtApiKey: 'localApiKey',
+        smmtVincheckUri: fakeRestClient.validSmmtUri,
+        smmtApiKey: fakeVincheck.validSmmtKey,
       };
+      const smmtClient = smmtClientFactory.create(fakeRestClient, config);
 
-      const result = smmtClient.vincheck(marque, vin, config);
+      const result = smmtClient.vincheck(marque, vin);
       result.then((recall) => {
         recall.should.have.property('success').eql(true);
         recall.should.have.property('description').eql('Recall Outstanding');
@@ -94,6 +110,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         recall.should.have.property('lastUpdate').eql('19022015');
 
         done();
+      }).catch((error) => {
+        done(error);
       });
     });
 
@@ -101,11 +119,12 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       const marque = 'BMW';
       const vin = 'AISXXXTEST1239617';
       const config = {
-        smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
-        smmtApiKey: 'localApiKey',
+        smmtVincheckUri: fakeRestClient.validSmmtUri,
+        smmtApiKey: fakeVincheck.validSmmtKey,
       };
+      const smmtClient = smmtClientFactory.create(fakeRestClient, config);
 
-      const result = smmtClient.vincheck(marque, vin, config);
+      const result = smmtClient.vincheck(marque, vin);
       result.then((recall) => {
         recall.should.have.property('success').eql(true);
         recall.should.have.property('description').eql('No Recall Outstanding');
@@ -113,6 +132,8 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         recall.should.have.property('lastUpdate').eql('19022015');
 
         done();
+      }).catch((error) => {
+        done(error);
       });
     });
 
@@ -120,17 +141,20 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       const marque = 'NewAwesomeRENAULT';
       const vin = 'AISXXXTEST1239617';
       const config = {
-        smmtVincheckUri: 'https://o2jf3z94li.execute-api.eu-west-2.amazonaws.com/dev/vincheck',
-        smmtApiKey: 'localApiKey',
+        smmtVincheckUri: fakeRestClient.validSmmtUri,
+        smmtApiKey: fakeVincheck.validSmmtKey,
       };
+      const smmtClient = smmtClientFactory.create(fakeRestClient, config);
 
-      const result = smmtClient.vincheck(marque, vin, config);
+      const result = smmtClient.vincheck(marque, vin);
       result.then((recall) => {
         recall.should.have.property('success').eql(false);
         recall.should.have.property('errors');
         recall.errors.should.be.a('array').that.have.same.members(['Bad Request - Invalid Marque']);
 
         done();
+      }).catch((error) => {
+        done(error);
       });
     });
   });

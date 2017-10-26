@@ -25,9 +25,8 @@
     "express": "^4.16.2",
     "morgan": "^1.9.0",
     "morgan-json": "^1.1.0",
-    "request": "^2.83.0",
-    "request-promise-native": "^1.0.5",
-    "serverless-http": "^1.5.1"
+    "serverless-http": "^1.5.1",
+    "superagent": "^3.8.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
@@ -40,6 +39,7 @@
     "mocha": "^4.0.1",
     "nodemon": "^1.12.1",
     "nyc": "^11.2.1",
+    "proxyquire": "^1.8.0",
     "retire": "^1.4.0"
   },
   "nyc": {

@@ -1,5 +1,7 @@
-const request = require('request-promise-native');
 const responseCode = require('./responseCode').code;
+
+let restClient;
+let config;
 
 function isVinNumberCorrect(vin) {
   const minVinLength = 5;
@@ -17,55 +19,54 @@ function isMarqueCorrect(marque) {
   return false;
 }
 
-function getSmmtResponse(marque, vin, config) {
-  return request({
-    method: 'POST',
-    url: config.smmtVincheckUri,
-    json: true,
-    body: {
+function generateRecallResponse(recall) {
+  const result = {
+    success: false,
+    errors: [],
+    description: '',
+    status: '',
+    lastUpdate: '',
+  };
+
+  switch (recall.status) {
+    case responseCode.smmtInvalidApiKey:
+      result.success = false;
+      result.errors.push(recall.status_description);
+      break;
+    case responseCode.smmtInvalidMarque:
+      result.success = false;
+      result.errors.push(recall.status_description);
+      break;
+    case responseCode.smmtNoRecall:
+      result.success = true;
+      break;
+    case responseCode.smmtRecall:
+      result.success = true;
+      break;
+    default:
+      break;
+  }
+
+  result.description = recall.status_description;
+  result.status = recall.vin_recall_status;
+  result.lastUpdate = recall.last_update;
+
+  return result;
+}
+
+function getSmmtResponseSuperagent(marque, vin) {
+  return restClient
+    .post(config.smmtVincheckUri)
+    .type('json')
+    .send({
       apikey: config.smmtApiKey,
       vin,
       marque,
-    },
-  })
-    .then((recall) => {
-      console.info(`SMMT status -> ${recall.status}`);
-      const result = {
-        success: false,
-        errors: [],
-        description: '',
-        status: '',
-        lastUpdate: '',
-      };
-
-      switch (recall.status) {
-        case responseCode.smmtInvalidApiKey:
-          result.success = false;
-          result.errors.push(recall.status_description);
-          break;
-        case responseCode.smmtInvalidMarque:
-          result.success = false;
-          result.errors.push(recall.status_description);
-          break;
-        case responseCode.smmtNoRecall:
-          result.success = true;
-          break;
-        case responseCode.smmtRecall:
-          result.success = true;
-          break;
-        default:
-          break;
-      }
-
-      result.description = recall.status_description;
-      result.status = recall.vin_recall_status;
-      result.lastUpdate = recall.last_update;
-
-      return result;
-    });
+    })
+    .then(response => generateRecallResponse(response.body));
 }
 
-exports.vincheck = (marque, vin, config) => {
+function vincheck(marque, vin) {
   const errors = [];
   let validVin = true;
   let validMarque = true;
@@ -81,8 +82,19 @@ exports.vincheck = (marque, vin, config) => {
   }
 
   if (validVin && validMarque) {
-    return getSmmtResponse(marque, vin, config);
+    return getSmmtResponseSuperagent(marque, vin);
   }
 
   return Promise.resolve({ success: false, errors });
+}
+
+exports.create = (restClientImplementation, smmtConfig) => {
+  if (!restClientImplementation || !smmtConfig) {
+    return new Error('SMMT client arguments are missing.');
+  }
+
+  restClient = restClientImplementation;
+  config = smmtConfig;
+
+  return { vincheck };
 };
