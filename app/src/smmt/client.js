@@ -61,7 +61,7 @@ function getSmmtResponse(marque, vin, config) {
       result.status = recall.vin_recall_status;
       result.lastUpdate = recall.last_update;
 
-      return Promise.resolve(result);
+      return result;
     });
 }
 
