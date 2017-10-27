@@ -113,7 +113,7 @@ describe('Recall lambda -> When recall check request was received', () => {
           res.should.have.status(200);
           res.should.have.header('content-type', 'application/json; charset=utf-8');
 
-          res.body.should.be.a('object');
+          res.body.should.be.an('object');
           res.body.should.have.property('status_description').eql('No Recall Outstanding');
           res.body.should.have.property('vin_recall_status').eql('');
           res.body.should.have.property('last_update').eql('19022015');
@@ -132,7 +132,7 @@ describe('Recall lambda -> When recall check request was received', () => {
           res.should.have.status(403);
           res.should.have.header('content-type', 'application/json; charset=utf-8');
 
-          res.body.should.be.a('object');
+          res.body.should.be.an('object');
           res.body.should.have.property('errors').to.be.an('array');
           res.body.errors.should.have.lengthOf(1);
           res.body.should.have.property('errors').eql(['Bad Request - Invalid Marque']);
