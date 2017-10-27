@@ -17,7 +17,7 @@ const correctSmmtConfig = {
 
 describe('Recall lambda -> When recall check request was received', () => {
   describe('but recall lambda has incorrect SMMT setting', () => {
-    it('then 418 http code is returned.', (done) => {
+    it('then 500 http code is returned.', (done) => {
       const incorrectSmmtConfig = {
         load: () => ({
           smmtVincheckUri: 'http://local/wrong/vincheck',
@@ -30,7 +30,7 @@ describe('Recall lambda -> When recall check request was received', () => {
         .get('/recalls')
         .query({ make: 'BMW', vin: 'AIS123TEST1239607' })
         .end((err, res) => {
-          res.should.have.status(418);
+          res.should.have.status(500);
           done();
         });
     });

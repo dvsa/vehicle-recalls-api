@@ -33,13 +33,15 @@ app.get('/recalls', (req, res) => {
         });
       }
     }).catch((error) => {
-      res.status(418)
+      res.status(500)
         .send({
           errors: [error],
         });
     });
   } else {
-    res.status(400).send();
+    res.status(400).send({
+      errors: ['make and vin query parameters are required'],
+    });
   }
 });
 
