@@ -12,7 +12,8 @@
     "lint:watch": "nodemon --exec \"npm run lint\"",
     "prod": "npm prune --production && npm install --production",
     "report": "nyc report --reporter=html",
-    "build": "mkdir -p ./dist && npm run prod && zip -r ./dist/vehicleRecallLambda-${BUILDSTAMP}.zip node_modules/ src/"
+    "build": "mkdir -p ./dist && npm run prod && zip -r ./dist/vehicleRecallLambda-${BUILDSTAMP}.zip node_modules/ src/",
+    "test-and-build": "npm install && npm test && npm run build"
   },
   "author": "Marcin Duszynski",
   "url": "https://github.com/dvsa/vehicle-recalls-api",
