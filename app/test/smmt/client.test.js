@@ -6,7 +6,6 @@ const smmtClientFactory = require('../../src/smmt/client');
 
 chai.should();
 
-
 describe('SMMT Client -> When vincheck function was executed', () => {
   it('and api key is incorrect then "Unauthorized" error and success equal false must be returned.', (done) => {
     const marque = 'RENAULT';
