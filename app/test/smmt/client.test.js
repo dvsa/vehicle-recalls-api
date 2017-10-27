@@ -21,7 +21,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
-      recall.errors.should.be.a('array').that.have.same.members(['Unauthorized']);
+      recall.errors.should.be.an('array').that.have.same.members(['Unauthorized']);
 
       done();
     }).catch((error) => {
@@ -42,7 +42,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
-      recall.errors.should.be.a('array').that.have.same.members(['Invalid Marque', 'Invalid VIN']);
+      recall.errors.should.be.an('array').that.have.same.members(['Invalid Marque', 'Invalid VIN']);
 
       done();
     }).catch((error) => {
@@ -63,7 +63,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
-      recall.errors.should.be.a('array').that.have.same.members(['Invalid Marque']);
+      recall.errors.should.be.an('array').that.have.same.members(['Invalid Marque']);
 
       done();
     }).catch((error) => {
@@ -84,7 +84,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
     result.then((recall) => {
       recall.should.have.property('success').eql(false);
       recall.should.have.property('errors');
-      recall.errors.should.be.a('array').that.have.same.members(['Invalid VIN']);
+      recall.errors.should.be.an('array').that.have.same.members(['Invalid VIN']);
 
       done();
     }).catch((error) => {
@@ -150,7 +150,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       result.then((recall) => {
         recall.should.have.property('success').eql(false);
         recall.should.have.property('errors');
-        recall.errors.should.be.a('array').that.have.same.members(['Bad Request - Invalid Marque']);
+        recall.errors.should.be.an('array').that.have.same.members(['Bad Request - Invalid Marque']);
 
         done();
       }).catch((error) => {

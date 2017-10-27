@@ -13,7 +13,7 @@
 - Has code been covered by unit tests?
 - Are unit test executed on Jenkins during pull request build?
 - Do all unit tests pass?
-- Does Jira ticket state updated?
+- Is Jira ticket state updated?
 
 ## Code review checklist (for reviewers -> Copy to your comment)
 - Is proper destination **branch** selected?

@@ -113,7 +113,7 @@ describe('Recall lambda -> When recall check request was received', () => {
           res.should.have.status(200);
           res.should.have.header('content-type', 'application/json; charset=utf-8');
 
-          res.body.should.be.a('object');
+          res.body.should.be.an('object');
           res.body.should.have.property('status_description').eql('Recall Outstanding');
           res.body.should.have.property('vin_recall_status').eql('BRAKES');
           res.body.should.have.property('last_update').eql('19022015');
