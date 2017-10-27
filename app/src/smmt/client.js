@@ -30,11 +30,9 @@ function generateRecallResponse(recall) {
 
   switch (recall.status) {
     case responseCode.smmtInvalidApiKey:
-      result.success = false;
       result.errors.push(recall.status_description);
       break;
     case responseCode.smmtInvalidMarque:
-      result.success = false;
       result.errors.push(recall.status_description);
       break;
     case responseCode.smmtNoRecall:
@@ -44,6 +42,8 @@ function generateRecallResponse(recall) {
       result.success = true;
       break;
     default:
+      result.errors.push(`Unknown SMMT code: ${recall.status}`);
+      result.errors.push(recall.status_description);
       break;
   }
 
