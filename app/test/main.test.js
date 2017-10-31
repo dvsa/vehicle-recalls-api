@@ -106,7 +106,6 @@ describe('Recall lambda -> When recall check request was received', () => {
           .get('/recalls')
           .query({ make: 'RENAULT', vin: '123' })
           .end((err, res) => {
-
             res.should.have.status(403);
             res.should.have.header('content-type', 'application/json; charset=utf-8');
 
