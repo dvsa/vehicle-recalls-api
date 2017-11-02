@@ -1,6 +1,10 @@
 exports.load = () => ({
   isDebug: (() => {
-    return process.env.SMMT_API_URI;
+    const debugMode = process.env.RECALL_DEBUG_MODE;
+    if (debugMode && debugMode.toUpperCase() === 'TRUE') {
+      return true;
+    }
+
+    return false;
   })(),
-  smmtApiKey: process.env.SMMT_API_KEY,
 });
