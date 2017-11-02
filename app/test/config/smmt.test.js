@@ -2,7 +2,7 @@ const chai = require('chai');
 
 chai.should();
 
-const configLoader = require('../../src/config/loader');
+const configLoader = require('../../src/config/smmt');
 
 describe('When config loader is called', () => {
   it('then SMMT uri and api key is returned', () => {

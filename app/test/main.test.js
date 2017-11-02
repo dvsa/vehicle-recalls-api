@@ -24,7 +24,7 @@ describe('Recall lambda -> When recall check request was received', () => {
           smmtApiKey: 'incorrectApiKey',
         }),
       };
-      const misconfiguredService = proxyquire('../src/main', { './config/loader': incorrectSmmtConfig, superagent: fakeRestClient });
+      const misconfiguredService = proxyquire('../src/main', { './config/smmt': incorrectSmmtConfig, superagent: fakeRestClient });
 
       chai.request(misconfiguredService.app)
         .get('/recalls')
@@ -44,7 +44,7 @@ describe('Recall lambda -> When recall check request was received', () => {
           smmtApiKey: fakeVincheck.validSmmtKey,
         }),
       };
-      const misconfiguredService = proxyquire('../src/main', { './config/loader': incorrectSmmtConfig, superagent: fakeRestClient });
+      const misconfiguredService = proxyquire('../src/main', { './config/smmt': incorrectSmmtConfig, superagent: fakeRestClient });
 
       chai.request(misconfiguredService.app)
         .get('/recalls')
@@ -58,7 +58,7 @@ describe('Recall lambda -> When recall check request was received', () => {
 
   describe('and it does not contain vin and make', () => {
     it('then 400 (Bad Request) http code is returned.', (done) => {
-      const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
+      const service = proxyquire('../src/main', { './config/smmt': correctSmmtConfig, superagent: fakeRestClient });
 
       chai.request(service.app)
         .get('/recalls')
@@ -71,7 +71,7 @@ describe('Recall lambda -> When recall check request was received', () => {
 
   describe('and it does not contain vin', () => {
     it('then 400 (Bad Request) http code is returned.', (done) => {
-      const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
+      const service = proxyquire('../src/main', { './config/smmt': correctSmmtConfig, superagent: fakeRestClient });
 
       chai.request(service.app)
         .get('/recalls')
@@ -85,7 +85,7 @@ describe('Recall lambda -> When recall check request was received', () => {
 
   describe('and it does not contain make', () => {
     it('then 400 (Bad Request) http code is returned.', (done) => {
-      const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
+      const service = proxyquire('../src/main', { './config/smmt': correctSmmtConfig, superagent: fakeRestClient });
 
       chai.request(service.app)
         .get('/recalls')
@@ -100,7 +100,7 @@ describe('Recall lambda -> When recall check request was received', () => {
   describe('and it contain vin and make', () => {
     describe('but vin is incorrect', () => {
       it('then 403 http code is returned and error message "Invalid VIN"', (done) => {
-        const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
+        const service = proxyquire('../src/main', { './config/smmt': correctSmmtConfig, superagent: fakeRestClient });
 
         chai.request(service.app)
           .get('/recalls')
@@ -120,7 +120,7 @@ describe('Recall lambda -> When recall check request was received', () => {
     });
 
     it('and vehicle has outstanding recall then http 200 and message "Recall Outstanding" it is returned.', (done) => {
-      const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
+      const service = proxyquire('../src/main', { './config/smmt': correctSmmtConfig, superagent: fakeRestClient });
 
       chai.request(service.app)
         .get('/recalls')
@@ -141,7 +141,7 @@ describe('Recall lambda -> When recall check request was received', () => {
     });
 
     it('and vehicle has not outstanding recall then http code 200 and message "No Recall Outstanding" it is returned.', (done) => {
-      const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
+      const service = proxyquire('../src/main', { './config/smmt': correctSmmtConfig, superagent: fakeRestClient });
 
       chai.request(service.app)
         .get('/recalls')
@@ -162,7 +162,7 @@ describe('Recall lambda -> When recall check request was received', () => {
     });
 
     it('and SMMT is returning wrong MARQUE message then http code 403 with error message "Incorrect MARQUE"', (done) => {
-      const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
+      const service = proxyquire('../src/main', { './config/smmt': correctSmmtConfig, superagent: fakeRestClient });
 
       chai.request(service.app)
         .get('/recalls')

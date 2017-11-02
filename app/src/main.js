@@ -4,8 +4,8 @@ const morgan = require('morgan');
 const morganJson = require('morgan-json');
 const superagent = require('superagent');
 
-const config = require('./config/loader').load();
-const smmtClient = require('./smmt/client').create(superagent, config);
+const smmtConfig = require('./config/smmt').load();
+const smmtClient = require('./smmt/client').create(superagent, smmtConfig);
 
 const app = express();
 app.disable('x-powered-by');
