@@ -16,12 +16,32 @@ const correctSmmtConfig = {
 };
 
 describe('Recall lambda -> When recall check request was received', () => {
-  describe('but recall lambda has incorrect SMMT setting', () => {
+  describe('but recall lambda has incorrect SMMT key', () => {
+    it('then 403 http code is returned.', (done) => {
+      const incorrectSmmtConfig = {
+        load: () => ({
+          smmtVincheckUri: fakeRestClient.validSmmtUri,
+          smmtApiKey: 'incorrectApiKey',
+        }),
+      };
+      const misconfiguredService = proxyquire('../src/main', { './config/loader': incorrectSmmtConfig, superagent: fakeRestClient });
+
+      chai.request(misconfiguredService.app)
+        .get('/recalls')
+        .query({ make: 'BMW', vin: 'AIS123TEST1239607' })
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
+  });
+
+  describe('but recall lambda has incorrect SMMT uri and uri does not exist', () => {
     it('then 500 http code is returned.', (done) => {
       const incorrectSmmtConfig = {
         load: () => ({
           smmtVincheckUri: 'http://local/wrong/vincheck',
-          smmtApiKey: 'localApiKey',
+          smmtApiKey: fakeVincheck.validSmmtKey,
         }),
       };
       const misconfiguredService = proxyquire('../src/main', { './config/loader': incorrectSmmtConfig, superagent: fakeRestClient });
@@ -35,9 +55,7 @@ describe('Recall lambda -> When recall check request was received', () => {
         });
     });
   });
-});
 
-describe('Recall lambda -> When recall check request was received', () => {
   describe('and it does not contain vin and make', () => {
     it('then 400 (Bad Request) http code is returned.', (done) => {
       const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
@@ -80,6 +98,27 @@ describe('Recall lambda -> When recall check request was received', () => {
   });
 
   describe('and it contain vin and make', () => {
+    describe('but vin is incorrect', () => {
+      it('then 403 http code is returned and error message "Invalid VIN"', (done) => {
+        const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
+
+        chai.request(service.app)
+          .get('/recalls')
+          .query({ make: 'RENAULT', vin: '123' })
+          .end((err, res) => {
+            res.should.have.status(403);
+            res.should.have.header('content-type', 'application/json; charset=utf-8');
+
+            res.body.should.be.an('object');
+            res.body.should.have.property('errors').to.be.an('array');
+            res.body.errors.should.have.lengthOf(1);
+            res.body.should.have.property('errors').eql(['Invalid VIN']);
+
+            done();
+          });
+      });
+    });
+
     it('and vehicle has outstanding recall then http 200 and message "Recall Outstanding" it is returned.', (done) => {
       const service = proxyquire('../src/main', { './config/loader': correctSmmtConfig, superagent: fakeRestClient });
 
