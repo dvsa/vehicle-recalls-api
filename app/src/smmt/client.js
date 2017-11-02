@@ -1,4 +1,5 @@
 const responseCode = require('./responseCode').code;
+const logger = require('lambda-log');
 
 let restClient;
 let config;
@@ -8,6 +9,8 @@ function isVinNumberCorrect(vin) {
   if (vin && vin.length >= minVinLength) {
     return true;
   }
+
+  logger.debug('Incorrect vin.', { context: { vin } });
   return false;
 }
 
@@ -16,6 +19,8 @@ function isMarqueCorrect(marque) {
   if (marque && marque.length >= minMarqueLength) {
     return true;
   }
+
+  logger.debug('Incorrect marque.', { context: { marque } });
   return false;
 }
 
@@ -30,18 +35,23 @@ function generateRecallResponse(recall) {
 
   switch (recall.status) {
     case responseCode.smmtInvalidApiKey:
+      logger.debug('Invalid SMMT api key.', { context: { recall } });
       result.errors.push(recall.status_description);
       break;
     case responseCode.smmtInvalidMarque:
+      logger.debug('Invalid SMMT marque.', { context: { recall } });
       result.errors.push(recall.status_description);
       break;
     case responseCode.smmtNoRecall:
+      logger.debug('No recall found.', { context: { recall } });
       result.success = true;
       break;
     case responseCode.smmtRecall:
+      logger.debug('Recall found.', { context: { recall } });
       result.success = true;
       break;
     default:
+      logger.debug('Unknown SMMT response', { context: { recall } });
       result.errors.push(`Unknown SMMT code: ${recall.status}`);
       result.errors.push(recall.status_description);
       break;

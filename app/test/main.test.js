@@ -25,7 +25,6 @@ describe('Recall lambda -> When recall check request was received', () => {
         }),
       };
       const misconfiguredService = proxyquire('../src/main', { './config/smmt': incorrectSmmtConfig, superagent: fakeRestClient });
-
       chai.request(misconfiguredService.app)
         .get('/recalls')
         .query({ make: 'BMW', vin: 'AIS123TEST1239607' })
