@@ -39,10 +39,7 @@ app.get('/recalls', (req, res) => {
           });
       } else {
         const context = {
-          recall,
-          make,
-          vin,
-          errors: recall.errors,
+          recall, make, vin, errors: recall.errors,
         };
         logger.warn('Recall fetching from SMMT failed.', { context });
         res.status(403).send({
@@ -51,9 +48,7 @@ app.get('/recalls', (req, res) => {
       }
     }).catch((error) => {
       const context = {
-        make,
-        vin,
-        errors: [error],
+        make, vin, errors: [error],
       };
       logger.warn('SMMT communication issue.', { context });
       res.status(500)
@@ -63,9 +58,7 @@ app.get('/recalls', (req, res) => {
     });
   } else {
     const context = {
-      make,
-      vin,
-      errors: ['Make and vin query parameters are required'],
+      make, vin, errors: ['Make and vin query parameters are required'],
     };
     logger.warn('Recall fetching from SMMT failed.', { context });
     res.status(400).send({
