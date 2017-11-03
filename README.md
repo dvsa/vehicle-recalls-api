@@ -11,6 +11,22 @@ Vehicle recalls api service written in Node.js and deployed as a lambda function
 GET /recalls?make=MakeToCheck&vin=vehicleVinNumber
 ```
 
+# HTTP response codes:
+### 200
+* OK -> Outstanding recall
+* OK -> No outstanding recall
+
+### 400
+* Bad request -> vin or make is not provided
+
+### 403
+* SMMT return information that provided VIN is invalid
+* SMMT return information that provided MAKE is invalid
+* SMMT return unauthorized error (invalid SMMT api key -> env variable: SMMT_API_KEY)
+
+### 500
+* Recall service is using incorrect SMMT uri (env variable: SMMT_API_URI)
+
 ##
 ### How to start
 
