@@ -7,23 +7,13 @@ const smmtConfig = require('./config/smmt').load();
 const smmtClient = require('./smmt/client').create(superagent, smmtConfig);
 const serviceConfig = require('./config/service').load();
 const requestLoggerConfig = require('./config/logger/requests');
+const logger = require('./logger/createLogger').create();
 
 const app = express();
 app.disable('x-powered-by');
 app.use(morgan(requestLoggerConfig(serviceConfig)));
 
-const logger = require('lambda-log');
-
-logger.config.debug = serviceConfig.isDebug;
-logger.config.silent = serviceConfig.isLoggerSilent;
-logger.config.meta.component = serviceConfig.name;
-logger.config.meta.env = serviceConfig.env;
-logger.config.tags.push(serviceConfig.functionName);
-logger.config.tags.push(serviceConfig.functionVersion);
-
 app.get('/recalls', (req, res) => {
-  logger.debug('Service config', { context: { serviceConfig } });
-
   const { make, vin } = req.query;
 
   if (make && vin) {

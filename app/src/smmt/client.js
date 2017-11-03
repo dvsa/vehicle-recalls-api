@@ -1,5 +1,5 @@
 const responseCode = require('./responseCode').code;
-const logger = require('lambda-log');
+const logger = require('../logger/createLogger').create();
 
 let restClient;
 let config;
