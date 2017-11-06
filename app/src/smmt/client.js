@@ -36,11 +36,11 @@ function generateRecallResponse(recall) {
 
   switch (recall.status) {
     case responseCode.smmtInvalidApiKey:
-      logger.debug({ context: { recall } }, 'Invalid SMMT api key.');
+      logger.error({ context: { recall } }, 'Invalid SMMT api key.');
       result.errors.push(recall.status_description);
       break;
     case responseCode.smmtInvalidMarque:
-      logger.debug({ context: { recall } }, 'Invalid SMMT marque.');
+      logger.error({ context: { recall } }, 'Invalid SMMT marque.');
       result.errors.push(recall.status_description);
       break;
     case responseCode.smmtNoRecall:
@@ -52,7 +52,7 @@ function generateRecallResponse(recall) {
       result.success = true;
       break;
     default:
-      logger.debug({ context: { recall } }, 'Unknown SMMT response');
+      logger.error({ context: { recall } }, 'Unknown SMMT response');
       result.errors.push(`Unknown SMMT code: ${recall.status}`);
       result.errors.push(recall.status_description);
       break;

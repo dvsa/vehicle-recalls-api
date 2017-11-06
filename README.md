@@ -63,6 +63,12 @@ npm run lint:watch
 ```
 
 ##
+### Debug logs
+If ``` debug ``` log level is set then additional information will be stored in logs:
+* Full request received by service
+* Correct SMMT responses received by service
+
+##
 ### Provided npm commands
 * npm start -> It will start web app on localhost:3000 using debug api key and any change will reload server (thx to [nodemon](https://github.com/remy/nodemon))
 * npm test -> It will execute unit, integration tests and unit tests code coverage check.

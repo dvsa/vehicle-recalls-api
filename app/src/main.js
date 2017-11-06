@@ -12,41 +12,44 @@ let logger = loggerFactory.create();
 const app = express();
 app.disable('x-powered-by');
 
+function fetchRecall(make, vin, res) {
+  smmtClient.vincheck(make, vin)
+    .then((recall) => {
+      if (recall.success) {
+        logger.info({ context: { make, vin, recall } }, 'Recall fetched successfully.');
+        res.status(200)
+          .send({
+            status_description: recall.description,
+            vin_recall_status: recall.status,
+            last_update: recall.lastUpdate,
+          });
+      } else {
+        const context = {
+          make, vin, errors: recall.errors,
+        };
+        logger.error({ context }, 'Recall fetching from SMMT failed.');
+        res.status(403).send({
+          errors: recall.errors,
+        });
+      }
+    }).catch((error) => {
+      const context = {
+        make, vin, errors: [error],
+      };
+      logger.error({ context }, 'SMMT communication issue.');
+      res.status(500)
+        .send({
+          errors: context.errors,
+        });
+    });
+}
+
 app.get('/recalls', (req, res) => {
   logger.debug(req, 'Received request.');
-
   const { make, vin } = req.query;
 
   if (make && vin) {
-    smmtClient.vincheck(make, vin)
-      .then((recall) => {
-        if (recall.success) {
-          logger.info({ context: { make, vin, recall } }, 'Recall fetched successfully.');
-          res.status(200)
-            .send({
-              status_description: recall.description,
-              vin_recall_status: recall.status,
-              last_update: recall.lastUpdate,
-            });
-        } else {
-          const context = {
-            make, vin, errors: recall.errors,
-          };
-          logger.error({ context }, 'Recall fetching from SMMT failed.');
-          res.status(403).send({
-            errors: recall.errors,
-          });
-        }
-      }).catch((error) => {
-        const context = {
-          make, vin, errors: [error],
-        };
-        logger.error({ context }, 'SMMT communication issue.');
-        res.status(500)
-          .send({
-            errors: context.errors,
-          });
-      });
+    fetchRecall(make, vin, res);
   } else {
     const context = {
       make, vin, errors: ['Make and vin query parameters are required'],

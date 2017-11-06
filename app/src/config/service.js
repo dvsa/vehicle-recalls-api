@@ -3,5 +3,5 @@ module.exports = {
   env: process.env.SERVICE_ENV || 'NotSet',
   functionName: 'NotSet',
   functionVersion: 'NotSet',
-  logLevel: (process.env.RECALL_LOG_LEVEL || 'debug').toLowerCase(),
+  logLevel: (process.env.RECALL_LOG_LEVEL || 'error').toLowerCase(),
 };
