@@ -3,6 +3,8 @@ Vehicle recalls api service written in Node.js and deployed as a lambda function
 
 # [Software Development Quality Assurance Policy](docs/NodejsDevQuality.md)
 
+# [Vehicle recalls service configuration](docs/ServiceConfiguration.md)
+
 # Documentation
 ### Get vehicle recall
 
