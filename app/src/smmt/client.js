@@ -1,8 +1,9 @@
 const responseCode = require('./responseCode').code;
-const logger = require('../logger/createLogger').create();
+const loggerFactory = require('../logger/createLogger');
 
 let restClient;
 let config;
+let logger;
 
 function isVinNumberCorrect(vin) {
   const minVinLength = 5;
@@ -77,6 +78,8 @@ function getSmmtResponseSuperagent(marque, vin) {
 }
 
 function vincheck(marque, vin) {
+  logger = loggerFactory.create();
+
   const errors = [];
   let validVin = true;
   let validMarque = true;

@@ -2,9 +2,12 @@ const serverless = require('serverless-http');
 const express = require('express');
 const superagent = require('superagent');
 
+const configLoader = require('./config/service');
 const smmtConfig = require('./config/smmt').load();
 const smmtClient = require('./smmt/client').create(superagent, smmtConfig);
-const logger = require('./logger/createLogger').create();
+const loggerFactory = require('./logger/createLogger');
+
+let logger = loggerFactory.create();
 
 const app = express();
 app.disable('x-powered-by');
@@ -56,4 +59,12 @@ app.get('/recalls', (req, res) => {
 });
 
 exports.app = app;
-exports.handler = serverless(app);
+exports.handler = serverless(app, {
+  request: (item, event, context) => {
+    configLoader.functionName = context.functionName;
+    configLoader.functionVersion = context.functionVersion;
+    logger = loggerFactory.create();
+
+    return item;
+  },
+});
