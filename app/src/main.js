@@ -11,8 +11,6 @@ app.disable('x-powered-by');
 
 app.get('/recalls', (req, res) => {
   logger.debug(req, 'Received request.');
-  logger.info(`INFO -> Log level: ${logger.level()}`);
-  logger.error(`ERROR -> Log level: ${logger.level()}`);
 
   const { make, vin } = req.query;
 
