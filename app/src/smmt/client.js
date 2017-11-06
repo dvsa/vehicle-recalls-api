@@ -10,7 +10,7 @@ function isVinNumberCorrect(vin) {
     return true;
   }
 
-  logger.debug('Incorrect vin.', { context: { vin } });
+  logger.debug({ context: { vin } }, 'Incorrect vin.');
   return false;
 }
 
@@ -20,7 +20,7 @@ function isMarqueCorrect(marque) {
     return true;
   }
 
-  logger.debug('Incorrect marque.', { context: { marque } });
+  logger.debug({ context: { marque } }, 'Incorrect marque.');
   return false;
 }
 
@@ -35,23 +35,23 @@ function generateRecallResponse(recall) {
 
   switch (recall.status) {
     case responseCode.smmtInvalidApiKey:
-      logger.debug('Invalid SMMT api key.', { context: { recall } });
+      logger.debug({ context: { recall } }, 'Invalid SMMT api key.');
       result.errors.push(recall.status_description);
       break;
     case responseCode.smmtInvalidMarque:
-      logger.debug('Invalid SMMT marque.', { context: { recall } });
+      logger.debug({ context: { recall } }, 'Invalid SMMT marque.');
       result.errors.push(recall.status_description);
       break;
     case responseCode.smmtNoRecall:
-      logger.debug('No recall found.', { context: { recall } });
+      logger.debug({ context: { recall } }, 'No recall found.');
       result.success = true;
       break;
     case responseCode.smmtRecall:
-      logger.debug('Recall found.', { context: { recall } });
+      logger.debug({ context: { recall } }, 'Recall found.');
       result.success = true;
       break;
     default:
-      logger.debug('Unknown SMMT response', { context: { recall } });
+      logger.debug({ context: { recall } }, 'Unknown SMMT response');
       result.errors.push(`Unknown SMMT code: ${recall.status}`);
       result.errors.push(recall.status_description);
       break;

@@ -24,8 +24,7 @@
   "dependencies": {
     "bunyan": "^1.8.12",
     "express": "^4.16.2",
-    "morgan": "^1.9.0",
-    "serverless-http": "^1.5.1",
+    "serverless-http": "^1.5.2",
     "superagent": "^3.8.0"
   },
   "devDependencies": {
@@ -38,7 +37,7 @@
     "eslint-plugin-react": "^7.4.0",
     "mocha": "^4.0.1",
     "nodemon": "^1.12.1",
-    "nyc": "^11.2.1",
+    "nyc": "^11.3.0",
     "proxyquire": "^1.8.0",
     "retire": "^1.4.0"
   },
