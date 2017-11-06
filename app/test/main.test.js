@@ -15,6 +15,29 @@ const correctSmmtConfig = {
   }),
 };
 
+const serviceConfig = {
+  functionName: 'NotSet',
+  functionVersion: 'NotSet',
+};
+
+describe('When service is created', () => {
+  describe('and handler was executed', () => {
+    it('then service configuration is updated and contain function and version from request context', (done) => {
+      const service = proxyquire('../src/main', { './config/service': serviceConfig, './config/smmt': correctSmmtConfig, superagent: fakeRestClient });
+
+      service.handler({}, {
+        functionName: 'testFunctionName',
+        functionVersion: 'v999',
+      }, () => {
+        serviceConfig.should.have.property('functionName').eql('testFunctionName');
+        serviceConfig.should.have.property('functionVersion').eql('v999');
+
+        done();
+      });
+    });
+  });
+});
+
 describe('Recall lambda -> When recall check request was received', () => {
   describe('but recall lambda has incorrect SMMT key', () => {
     it('then 403 http code is returned.', (done) => {
