@@ -4,9 +4,16 @@ const serviceConfig = require('../config/service');
 
 function stderrWithLevelAsString() {
   return {
-    write: entry => process.stderr.write(`${safeJsonStringify(Object.assign(entry, {
-      level: bunyan.nameFromLevel[entry.level],
-    }))}\n`),
+    write: (entry) => {
+      const log = entry;
+
+      delete log.pid;
+      delete log.hostname;
+
+      process.stderr.write(`${safeJsonStringify(Object.assign(log, {
+        level: bunyan.nameFromLevel[log.level],
+      }))}\n`);
+    },
   };
 }
 
