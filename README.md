@@ -3,6 +3,8 @@ Vehicle recalls api service written in Node.js and deployed as a lambda function
 
 # [Software Development Quality Assurance Policy](docs/NodejsDevQuality.md)
 
+# [Vehicle recalls service configuration](docs/ServiceConfiguration.md)
+
 # Documentation
 ### Get vehicle recall
 
@@ -10,6 +12,22 @@ Vehicle recalls api service written in Node.js and deployed as a lambda function
 ```
 GET /recalls?make=MakeToCheck&vin=vehicleVinNumber
 ```
+
+# HTTP response codes:
+### 200
+* OK -> Outstanding recall
+* OK -> No outstanding recall
+
+### 400
+* Bad request -> vin or make is not provided
+
+### 403
+* SMMT return information that provided VIN is invalid
+* SMMT return information that provided MAKE is invalid
+* SMMT return unauthorized error (invalid SMMT api key -> env variable: SMMT_API_KEY)
+
+### 500
+* Recall service is using incorrect SMMT uri (env variable: SMMT_API_URI)
 
 ##
 ### How to start
@@ -43,6 +61,12 @@ npm install
 npm run test:watch
 npm run lint:watch
 ```
+
+##
+### Debug logs
+If ``` debug ``` log level is set then additional information will be stored in logs:
+* Full request received by service
+* Correct SMMT responses received by service
 
 ##
 ### Provided npm commands

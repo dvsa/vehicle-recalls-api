@@ -1,26 +1,22 @@
 const serverless = require('serverless-http');
 const express = require('express');
-const morgan = require('morgan');
-const morganJson = require('morgan-json');
 const superagent = require('superagent');
 
-const config = require('./config/loader').load();
-const smmtClient = require('./smmt/client').create(superagent, config);
+const serviceConfig = require('./config/service');
+const smmtConfig = require('./config/smmt').load();
+const smmtClient = require('./smmt/client').create(superagent, smmtConfig);
+const loggerFactory = require('./logger/createLogger');
+
+let logger = loggerFactory.create();
 
 const app = express();
 app.disable('x-powered-by');
 
-const logFormat = morganJson(':method :url :status :res[content-length] bytes :response-time ms');
-app.use(morgan(logFormat));
-
-app.get('/recalls', (req, res) => {
-  const { make, vin } = req.query;
-
-  if (make && vin) {
-    const result = smmtClient.vincheck(make, vin);
-
-    result.then((recall) => {
+function fetchRecall(make, vin, res) {
+  smmtClient.vincheck(make, vin)
+    .then((recall) => {
       if (recall.success) {
+        logger.info({ context: { make, vin, recall } }, 'Recall fetched successfully.');
         res.status(200)
           .send({
             status_description: recall.description,
@@ -28,22 +24,51 @@ app.get('/recalls', (req, res) => {
             last_update: recall.lastUpdate,
           });
       } else {
+        const context = {
+          make, vin, errors: recall.errors,
+        };
+        logger.error({ context }, 'Recall fetching from SMMT failed.');
         res.status(403).send({
           errors: recall.errors,
         });
       }
     }).catch((error) => {
+      const context = {
+        make, vin, errors: [error],
+      };
+      logger.error({ context }, 'SMMT communication issue.');
       res.status(500)
         .send({
-          errors: [error],
+          errors: context.errors,
         });
     });
+}
+
+app.get('/recalls', (req, res) => {
+  logger.debug(req, 'Received request.');
+  const { make, vin } = req.query;
+
+  if (make && vin) {
+    fetchRecall(make, vin, res);
   } else {
+    const context = {
+      make, vin, errors: ['Make and vin query parameters are required'],
+    };
+    logger.error({ context }, 'Invalid request.');
     res.status(400).send({
-      errors: ['make and vin query parameters are required'],
+      errors: context.errors,
     });
   }
 });
 
 exports.app = app;
-exports.handler = serverless(app);
+exports.handler = serverless(app, {
+  request: (item, event, context) => {
+    logger.debug({ item, event, context }, 'Function request handler');
+    serviceConfig.functionName = context.functionName;
+    serviceConfig.functionVersion = context.functionVersion;
+    logger = loggerFactory.create();
+
+    return item;
+  },
+});
