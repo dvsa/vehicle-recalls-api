@@ -22,6 +22,7 @@
     "url": "https://github.com/dvsa/vehicle-recalls-api.git"
   },
   "dependencies": {
+    "aws-sdk": "^2.147.0",
     "bunyan": "^1.8.12",
     "express": "^4.16.2",
     "safe-json-stringify": "^1.0.4",
