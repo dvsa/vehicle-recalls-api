@@ -24,6 +24,7 @@
   "dependencies": {
     "aws-sdk": "^2.147.0",
     "bunyan": "^1.8.12",
+    "co": "^4.6.0",
     "express": "^4.16.2",
     "safe-json-stringify": "^1.0.4",
     "serverless-http": "^1.5.2",

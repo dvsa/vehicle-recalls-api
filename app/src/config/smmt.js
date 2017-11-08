@@ -1,3 +1,4 @@
+const co = require('co');
 const AWS = require('aws-sdk');
 const loggerFactory = require('../logger/createLogger');
 
@@ -6,21 +7,26 @@ const kms = new AWS.KMS();
 
 let smmtApiKey;
 
-exports.load = () => {
+function getSmmtApiKey() {
+  return kms.decrypt({
+    CiphertextBlob: Buffer.from(process.env.SMMT_API_KEY, 'base64'),
+  }).promise()
+    .catch((reason) => {
+      logger.error(reason, 'SMMT api key decryption failed.');
+    })
+    .then((data) => {
+      logger.info('SMMT api key decrypted properly.');
+      return data.Plaintext.toString('ascii');
+    });
+}
+
+exports.load = () => co.wrap(function* loadConfig() {
   if (!smmtApiKey) {
-    kms.decrypt({
-      CiphertextBlob: Buffer(process.env.SMMT_API_KEY, 'base64'),
-    }).promise()
-      .then((data) => {
-        smmtApiKey = data.Plaintext.toString('ascii');
-      })
-      .catch((reason) => {
-        logger.error(reason, 'SMMT api key decryption failed.');
-      });
+    smmtApiKey = yield getSmmtApiKey();
   }
 
   return {
     smmtVincheckUri: process.env.SMMT_API_URI,
     smmtApiKey,
   };
-};
+});
