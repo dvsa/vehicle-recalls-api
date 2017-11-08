@@ -7,7 +7,7 @@ module.exports = {
     'extends': 'airbnb',
     'rules': {
         'import/no-extraneous-dependencies': ['error', {
-            'devDependencies': ['**/*.test.js', '**/*.spec.js']
+            'devDependencies': ['**/*.test.js', '**/*.spec.js', './src/wrapper/awsSdkWrapper.js']
         }],
         "no-console": ["error", {
              allow: ["warn", "error", "info"] 

@@ -4,7 +4,7 @@ const express = require('express');
 const superagent = require('superagent');
 
 const serviceConfig = require('./config/service');
-const smmtConfigLoader = require('./config/smmt');
+const smmtConfigLoader = require('./config/smmtConfigurationLoader');
 const smmtClientFactory = require('./smmt/client');
 const loggerFactory = require('./logger/createLogger');
 
@@ -48,7 +48,7 @@ function* fetchRecall(make, vin, res) {
 }
 
 app.get('/recalls', (req, res) => {
-  logger.debug(req, 'Received request.');
+  logger.debug({ context: req }, 'Received request.');
   const { make, vin } = req.query;
 
   if (make && vin) {

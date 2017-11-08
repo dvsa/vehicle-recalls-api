@@ -79,7 +79,6 @@ function getSmmtResponseSuperagent(marque, vin) {
 
 function vincheck(marque, vin) {
   logger = loggerFactory.create();
-  logger.debug(config, 'SMMT api configuration');
 
   const errors = [];
   let validVin = true;
