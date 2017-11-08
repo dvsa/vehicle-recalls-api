@@ -5,7 +5,7 @@ const superagent = require('superagent');
 
 const serviceConfig = require('./config/service');
 const smmtConfigLoader = require('./config/smmt');
-const smmtClientFactory = require('./smmt/client'); // .create(superagent, smmtConfig);
+const smmtClientFactory = require('./smmt/client');
 const loggerFactory = require('./logger/createLogger');
 
 let logger = loggerFactory.create();
