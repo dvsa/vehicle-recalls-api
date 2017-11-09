@@ -23,9 +23,7 @@ function getSmmtApiKey() {
     });
 }
 
-exports.load = () => co.wrap(function* loadConfig(key) {
-  smmtApiKey = key;
-
+exports.load = () => co.wrap(function* loadConfig() {
   if (!smmtApiKey) {
     smmtApiKey = yield getSmmtApiKey();
     logger.debug('Smmt api key yield from KMS');

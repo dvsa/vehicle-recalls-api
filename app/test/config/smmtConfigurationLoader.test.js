@@ -8,11 +8,16 @@ const fakeEnvVariables = {
   SMMT_API_URI: 'fakeSmmtUri',
 };
 
+let executionCount = 0;
+
 const fakeSuccessAwsSdk = {
   KMS: function KMS() {
     return {
       decrypt: () => ({
-        promise: () => Promise.resolve({ Plaintext: fakeEnvVariables.SMMT_API_KEY }),
+        promise: () => {
+          executionCount += 1;
+          return Promise.resolve({ Plaintext: fakeEnvVariables.SMMT_API_KEY });
+        },
       }),
     };
   },
@@ -53,15 +58,22 @@ describe('When SMMT config loader is called', () => {
 
   describe('and SMMT api key was set during previous config loading', () => {
     it('then KMS will not be called', (done) => {
+      executionCount = 0;
       const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', { '../wrapper/awsSdkWrapper': fakeSuccessAwsSdk, '../wrapper/envVariablesWrapper': fakeEnvVariables });
       const loadedConfig = configLoader.load();
 
-      loadedConfig('key')
-        .then((config) => {
-          config.should.have.property('smmtVincheckUri').eql(fakeEnvVariables.SMMT_API_URI);
-          config.should.have.property('smmtApiKey').eql('key');
+      loadedConfig()
+        .then(() => {
+          loadedConfig().then((config) => {
+            executionCount.should.eql(1);
 
-          done();
+            config.should.have.property('smmtVincheckUri').eql(fakeEnvVariables.SMMT_API_URI);
+            config.should.have.property('smmtApiKey').eql(fakeEnvVariables.SMMT_API_KEY);
+
+            done();
+          }).catch((reason) => {
+            done(reason);
+          });
         })
         .catch((error) => {
           done(error);
