@@ -6,11 +6,20 @@ provider:
   memorySize: 128
   stage: dev
   region: eu-west-2
+  
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - KMS:Decrypt
+      Resource: ${env:RECALLS_KMS_ARN}
 
 # you can define service wide environment variables here
   environment:
     SMMT_API_URI: ${env:SMMT_API_URI}
     SMMT_API_KEY: ${env:SMMT_API_KEY}
+    SERVICE_NAME: vehicle-recalls
+    SERVICE_ENV: serverless
+    RECALL_LOG_LEVEL: debug
 
 package:
   exclude:

@@ -1,10 +1,11 @@
+const co = require('co');
 const serverless = require('serverless-http');
 const express = require('express');
 const superagent = require('superagent');
 
 const serviceConfig = require('./config/service');
-const smmtConfig = require('./config/smmt').load();
-const smmtClient = require('./smmt/client').create(superagent, smmtConfig);
+const smmtConfigLoader = require('./config/smmtConfigurationLoader');
+const smmtClientFactory = require('./smmt/client');
 const loggerFactory = require('./logger/createLogger');
 
 let logger = loggerFactory.create();
@@ -12,8 +13,10 @@ let logger = loggerFactory.create();
 const app = express();
 app.disable('x-powered-by');
 
-function fetchRecall(make, vin, res) {
-  smmtClient.vincheck(make, vin)
+function* fetchRecall(make, vin, res) {
+  const smmtConfig = yield smmtConfigLoader.load();
+
+  smmtClientFactory.create(superagent, smmtConfig).vincheck(make, vin)
     .then((recall) => {
       if (recall.success) {
         logger.info({ context: { make, vin, recall } }, 'Recall fetched successfully.');
@@ -45,11 +48,11 @@ function fetchRecall(make, vin, res) {
 }
 
 app.get('/recalls', (req, res) => {
-  logger.debug(req, 'Received request.');
+  logger.debug({ context: req }, 'Received request.');
   const { make, vin } = req.query;
 
   if (make && vin) {
-    fetchRecall(make, vin, res);
+    co(fetchRecall(make, vin, res));
   } else {
     const context = {
       make, vin, errors: ['Make and vin query parameters are required'],
