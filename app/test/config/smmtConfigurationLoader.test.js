@@ -83,7 +83,7 @@ describe('When SMMT config loader is called', () => {
 
   describe('and KMS responded incorrectly', () => {
     it('then undefined is returned', (done) => {
-      const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', { '../wrapper/awsSdkWrapper': fakeFailureAwsSdk });
+      const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', { '../wrapper/awsSdkWrapper': fakeFailureAwsSdk, '../wrapper/envVariablesWrapper': fakeEnvVariables });
       const loadedConfig = configLoader.load();
 
       loadedConfig()
