@@ -91,7 +91,7 @@ describe('When SMMT config loader is called', () => {
 
       loadedConfig
         .then(() => {
-          configLoader.load().then((config) => {
+          loadedConfig.then((config) => {
             executionCount.should.eql(1);
 
             config.should.have.property('smmtVincheckUri').eql(fakeEnvVariables.SMMT_API_URI);
