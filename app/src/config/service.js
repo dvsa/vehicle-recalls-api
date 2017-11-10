@@ -5,6 +5,6 @@ module.exports = {
   env: env.SERVICE_ENV || 'NotSet',
   functionName: 'NotSet',
   functionVersion: 'NotSet',
-  logLevel: (env.RECALL_LOG_LEVEL || 'debug').toLowerCase(),
+  logLevel: (env.RECALL_LOG_LEVEL || 'info').toLowerCase(),
   isKmsEnabled: ((env.KMS_ENABLED || 'false').toLowerCase() === 'true'),
 };

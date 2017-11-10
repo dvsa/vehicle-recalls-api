@@ -66,7 +66,7 @@ describe('When SMMT config loader is called', () => {
       });
       const loadedConfig = configLoader.load();
 
-      loadedConfig()
+      loadedConfig
         .then((config) => {
           config.should.have.property('smmtVincheckUri').eql(fakeEnvVariables.SMMT_API_URI);
           config.should.have.property('smmtApiKey').eql(fakeEnvVariables.SMMT_API_KEY);
@@ -89,9 +89,9 @@ describe('When SMMT config loader is called', () => {
       });
       const loadedConfig = configLoader.load();
 
-      loadedConfig()
+      loadedConfig
         .then(() => {
-          loadedConfig().then((config) => {
+          loadedConfig.then((config) => {
             executionCount.should.eql(1);
 
             config.should.have.property('smmtVincheckUri').eql(fakeEnvVariables.SMMT_API_URI);
@@ -118,9 +118,9 @@ describe('When SMMT config loader is called', () => {
       });
       const loadedConfig = configLoader.load();
 
-      loadedConfig()
+      loadedConfig
         .then(() => {
-          loadedConfig().then((config) => {
+          loadedConfig.then((config) => {
             executionCount.should.eql(0);
 
             config.should.have.property('smmtVincheckUri').eql(fakeEnvVariables.SMMT_API_URI);
@@ -146,7 +146,7 @@ describe('When SMMT config loader is called', () => {
       });
       const loadedConfig = configLoader.load();
 
-      loadedConfig()
+      loadedConfig
         .then((config) => {
           should.not.exist(config);
           done();

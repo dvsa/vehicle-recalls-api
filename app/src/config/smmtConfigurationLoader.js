@@ -24,7 +24,7 @@ function getSmmtApiKey() {
     });
 }
 
-exports.load = () => co.wrap(function* loadConfig() {
+exports.load = co.wrap(function* loadConfig() {
   if (!smmtApiKey) {
     if (config.isKmsEnabled) {
       smmtApiKey = yield getSmmtApiKey();
