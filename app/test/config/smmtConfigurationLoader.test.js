@@ -69,9 +69,6 @@ describe('When SMMT config loader is called', () => {
         './service': fakeServiceConfigWithEnabledKms,
       });
       return configLoader.load()
-        // .then(() => {
-        //   done(new Error('Exception should be thrown'));
-        // })
         .catch((reason) => {
           reason.message.should.be.eql('External dependence "Logger" is missing.');
         });

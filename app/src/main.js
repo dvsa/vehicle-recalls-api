@@ -12,9 +12,7 @@ const app = express();
 app.disable('x-powered-by');
 const traceHeaderName = 'x-mot-trace-id';
 
-let logger;
-
-function* fetchRecall(make, vin, res) {
+function* fetchRecall(make, vin, res, logger) {
   const smmtConfig = yield smmtConfigLoader.load(logger);
 
   smmtClientFactory.create(superagent, smmtConfig, logger).vincheck(make, vin)
@@ -49,12 +47,12 @@ function* fetchRecall(make, vin, res) {
 }
 
 app.get('/recalls', (req, res) => {
-  logger = loggerFactory.create(req.headers[traceHeaderName]);
+  const logger = loggerFactory.create(req.headers[traceHeaderName]);
   logger.debug({ context: req }, 'Received request.');
   const { make, vin } = req.query;
 
   if (make && vin) {
-    co(fetchRecall(make, vin, res));
+    co(fetchRecall(make, vin, res, logger));
   } else {
     const context = {
       make, vin, errors: ['Make and vin query parameters are required'],
