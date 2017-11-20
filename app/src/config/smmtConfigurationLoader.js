@@ -1,12 +1,11 @@
 const co = require('co');
 const AWS = require('../wrapper/awsSdkWrapper');
-const loggerFactory = require('../logger/createLogger');
 const env = require('../wrapper/envVariablesWrapper');
 const config = require('./service');
 
-const logger = loggerFactory.create();
 const kms = new AWS.KMS();
 
+let logger;
 let smmtApiKey;
 
 function getSmmtApiKey() {
@@ -24,7 +23,13 @@ function getSmmtApiKey() {
     });
 }
 
-exports.load = co.wrap(function* loadConfig() {
+exports.load = co.wrap(function* loadConfig(applicationLogger) {
+  if (applicationLogger) {
+    logger = applicationLogger;
+  } else {
+    return Promise.reject(new Error('External dependence "Logger" is missing.'));
+  }
+
   if (!smmtApiKey) {
     if (config.isKmsEnabled) {
       smmtApiKey = yield getSmmtApiKey();

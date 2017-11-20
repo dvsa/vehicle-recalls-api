@@ -8,21 +8,19 @@ const smmtConfigLoader = require('./config/smmtConfigurationLoader');
 const smmtClientFactory = require('./smmt/client');
 const loggerFactory = require('./logger/createLogger');
 
-let logger = loggerFactory.create();
-
 const app = express();
 app.disable('x-powered-by');
-
 const traceHeaderName = 'x-mot-trace-id';
-let traceId;
+
+let logger;
 
 function* fetchRecall(make, vin, res) {
-  const smmtConfig = yield smmtConfigLoader.load();
+  const smmtConfig = yield smmtConfigLoader.load(logger);
 
-  smmtClientFactory.create(superagent, smmtConfig).vincheck(make, vin)
+  smmtClientFactory.create(superagent, smmtConfig, logger).vincheck(make, vin)
     .then((recall) => {
       if (recall.success) {
-        logger.info({ context: { make, vin, recall }, traceId }, 'Recall fetched successfully.');
+        logger.info({ context: { make, vin, recall } }, 'Recall fetched successfully.');
         res.status(200)
           .send({
             status_description: recall.description,
@@ -33,7 +31,7 @@ function* fetchRecall(make, vin, res) {
         const context = {
           make, vin, errors: recall.errors,
         };
-        logger.error({ context, traceId }, 'Recall fetching from SMMT failed.');
+        logger.error({ context }, 'Recall fetching from SMMT failed.');
         res.status(403).send({
           errors: recall.errors,
         });
@@ -42,7 +40,7 @@ function* fetchRecall(make, vin, res) {
       const context = {
         make, vin, errors: [error],
       };
-      logger.error({ context, traceId }, 'SMMT communication issue.');
+      logger.error({ context }, 'SMMT communication issue.');
       res.status(500)
         .send({
           errors: context.errors,
@@ -51,9 +49,9 @@ function* fetchRecall(make, vin, res) {
 }
 
 app.get('/recalls', (req, res) => {
-  logger.debug({ context: req, traceId }, 'Received request.');
+  logger = loggerFactory.create(req.headers[traceHeaderName]);
+  logger.debug({ context: req }, 'Received request.');
   const { make, vin } = req.query;
-  traceId = req.headers[traceHeaderName];
 
   if (make && vin) {
     co(fetchRecall(make, vin, res));
@@ -61,7 +59,7 @@ app.get('/recalls', (req, res) => {
     const context = {
       make, vin, errors: ['Make and vin query parameters are required'],
     };
-    logger.error({ context, traceId }, 'Invalid request.');
+    logger.error({ context }, 'Invalid request.');
     res.status(400).send({
       errors: context.errors,
     });
@@ -71,16 +69,8 @@ app.get('/recalls', (req, res) => {
 exports.app = app;
 exports.handler = serverless(app, {
   request: (item, event, context) => {
-    logger.debug({
-      item,
-      event,
-      context,
-      traceId,
-    }, 'Function request handler');
-
     serviceConfig.functionName = context.functionName;
     serviceConfig.functionVersion = context.functionVersion;
-    logger = loggerFactory.create();
 
     return item;
   },

@@ -1,5 +1,4 @@
 const responseCode = require('./responseCode').code;
-const loggerFactory = require('../logger/createLogger');
 
 let restClient;
 let config;
@@ -78,7 +77,7 @@ function getSmmtResponseSuperagent(marque, vin) {
 }
 
 function vincheck(marque, vin) {
-  logger = loggerFactory.create();
+  // logger = loggerFactory.create();
 
   const errors = [];
   let validVin = true;
@@ -101,13 +100,18 @@ function vincheck(marque, vin) {
   return Promise.resolve({ success: false, errors });
 }
 
-exports.create = (restClientImplementation, smmtConfig) => {
+exports.create = (restClientImplementation, smmtConfig, applicationLogger) => {
   if (!restClientImplementation || !smmtConfig) {
     return new Error('SMMT client arguments are missing.');
   }
 
+  if (!applicationLogger) {
+    return new Error('External dependence "Logger" is missing.');
+  }
+
   restClient = restClientImplementation;
   config = smmtConfig;
+  logger = applicationLogger;
 
   return { vincheck };
 };

@@ -1,10 +1,38 @@
 const chai = require('chai');
+const sinon = require('sinon');
+
 const fakeRestClient = require('../fake/fakeRestClient');
 const fakeVincheck = require('../fake/smmt/vincheck');
 
 const smmtClientFactory = require('../../src/smmt/client');
+const realLogger = require('../../src/logger/createLogger').create();
 
+const fakeLogger = sinon.stub(realLogger);
 chai.should();
+
+describe('When SMMT client is created', () => {
+  describe('and no parameters are provided to the create method', () => {
+    it('then error is return', () => {
+      const smmtClient = smmtClientFactory.create();
+
+      smmtClient.should.be.a('Error');
+      smmtClient.should.have.property('message').eql('SMMT client arguments are missing.');
+    });
+  });
+
+  describe('and logger instance is not provided to the create method', () => {
+    it('then error is return', () => {
+      const config = {
+        smmtVincheckUri: fakeRestClient.validSmmtUri,
+        smmtApiKey: 'wrongApiKey',
+      };
+      const smmtClient = smmtClientFactory.create(fakeRestClient, config);
+
+      smmtClient.should.be.a('Error');
+      smmtClient.should.have.property('message').eql('External dependence "Logger" is missing.');
+    });
+  });
+});
 
 describe('SMMT Client -> When vincheck function was executed', () => {
   it('and api key is incorrect then "Unauthorized" error and success equal false must be returned.', (done) => {
@@ -14,7 +42,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtVincheckUri: fakeRestClient.validSmmtUri,
       smmtApiKey: 'wrongApiKey',
     };
-    const smmtClient = smmtClientFactory.create(fakeRestClient, config);
+    const smmtClient = smmtClientFactory.create(fakeRestClient, config, fakeLogger);
 
     const result = smmtClient.vincheck(marque, vin);
     result.then((recall) => {
@@ -35,7 +63,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtVincheckUri: fakeRestClient.validSmmtUri,
       smmtApiKey: fakeVincheck.validSmmtKey,
     };
-    const smmtClient = smmtClientFactory.create(fakeRestClient, config);
+    const smmtClient = smmtClientFactory.create(fakeRestClient, config, fakeLogger);
 
     const result = smmtClient.vincheck(marque, vin);
     result.then((recall) => {
@@ -56,7 +84,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtVincheckUri: fakeRestClient.validSmmtUri,
       smmtApiKey: fakeVincheck.validSmmtKey,
     };
-    const smmtClient = smmtClientFactory.create(fakeRestClient, config);
+    const smmtClient = smmtClientFactory.create(fakeRestClient, config, fakeLogger);
 
     const result = smmtClient.vincheck(marque, vin, config);
     result.then((recall) => {
@@ -77,7 +105,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       smmtVincheckUri: fakeRestClient.validSmmtUri,
       smmtApiKey: fakeVincheck.validSmmtKey,
     };
-    const smmtClient = smmtClientFactory.create(fakeRestClient, config);
+    const smmtClient = smmtClientFactory.create(fakeRestClient, config, fakeLogger);
 
     const result = smmtClient.vincheck(marque, vin);
     result.then((recall) => {
@@ -99,7 +127,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         smmtVincheckUri: fakeRestClient.validSmmtUri,
         smmtApiKey: fakeVincheck.validSmmtKey,
       };
-      const smmtClient = smmtClientFactory.create(fakeRestClient, config);
+      const smmtClient = smmtClientFactory.create(fakeRestClient, config, fakeLogger);
 
       const result = smmtClient.vincheck(marque, vin);
       result.then((recall) => {
@@ -121,7 +149,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         smmtVincheckUri: fakeRestClient.validSmmtUri,
         smmtApiKey: fakeVincheck.validSmmtKey,
       };
-      const smmtClient = smmtClientFactory.create(fakeRestClient, config);
+      const smmtClient = smmtClientFactory.create(fakeRestClient, config, fakeLogger);
 
       const result = smmtClient.vincheck(marque, vin);
       result.then((recall) => {
@@ -143,7 +171,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
         smmtVincheckUri: fakeRestClient.validSmmtUri,
         smmtApiKey: fakeVincheck.validSmmtKey,
       };
-      const smmtClient = smmtClientFactory.create(fakeRestClient, config);
+      const smmtClient = smmtClientFactory.create(fakeRestClient, config, fakeLogger);
 
       const result = smmtClient.vincheck(marque, vin);
       result.then((recall) => {

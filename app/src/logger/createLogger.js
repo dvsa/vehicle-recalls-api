@@ -17,12 +17,13 @@ function stderrWithLevelAsString() {
   };
 }
 
-module.exports.create = () => bunyan.createLogger({
+module.exports.create = traceId => bunyan.createLogger({
   name: serviceConfig.name,
   level: serviceConfig.logLevel,
   env: serviceConfig.env,
   functionName: serviceConfig.functionName,
   functionVersion: serviceConfig.functionVersion,
+  traceId,
   streams: [{
     type: 'raw',
     stream: stderrWithLevelAsString(),
