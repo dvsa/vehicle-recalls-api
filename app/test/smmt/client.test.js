@@ -12,7 +12,7 @@ chai.should();
 
 describe('When SMMT client is created', () => {
   describe('and no parameters are provided to the create method', () => {
-    it('then error is return', () => {
+    it('then error is returned', () => {
       const smmtClient = smmtClientFactory.create();
 
       smmtClient.should.be.a('Error');
@@ -21,7 +21,7 @@ describe('When SMMT client is created', () => {
   });
 
   describe('and logger instance is not provided to the create method', () => {
-    it('then error is return', () => {
+    it('then error is returned', () => {
       const config = {
         smmtVincheckUri: fakeRestClient.validSmmtUri,
         smmtApiKey: 'wrongApiKey',
