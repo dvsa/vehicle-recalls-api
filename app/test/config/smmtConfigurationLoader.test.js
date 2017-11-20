@@ -1,5 +1,9 @@
 const chai = require('chai');
+const sinon = require('sinon');
 const proxyquire = require('proxyquire');
+const realLogger = require('../../src/logger/createLogger').create();
+
+const fakeLogger = sinon.stub(realLogger);
 
 const should = chai.should();
 
@@ -57,6 +61,20 @@ const fakeFailureAwsSdk = {
 };
 
 describe('When SMMT config loader is called', () => {
+  describe('but application logger is not provided', () => {
+    it('then error is thrown', () => {
+      const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', {
+        '../wrapper/awsSdkWrapper': fakeSuccessAwsSdk,
+        '../wrapper/envVariablesWrapper': fakeEnvVariables,
+        './service': fakeServiceConfigWithEnabledKms,
+      });
+      return configLoader.load()
+        .catch((reason) => {
+          reason.message.should.be.eql('External dependence "Logger" is missing.');
+        });
+    });
+  });
+
   describe('and KMS responded correctly', () => {
     it('then SMMT uri and api key is returned', (done) => {
       const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', {
@@ -64,7 +82,7 @@ describe('When SMMT config loader is called', () => {
         '../wrapper/envVariablesWrapper': fakeEnvVariables,
         './service': fakeServiceConfigWithEnabledKms,
       });
-      const loadedConfig = configLoader.load();
+      const loadedConfig = configLoader.load(fakeLogger);
 
       loadedConfig
         .then((config) => {
@@ -87,11 +105,11 @@ describe('When SMMT config loader is called', () => {
         '../wrapper/envVariablesWrapper': fakeEnvVariables,
         './service': fakeServiceConfigWithEnabledKms,
       });
-      const loadedConfig = configLoader.load();
+      const loadedConfig = configLoader.load(fakeLogger);
 
       loadedConfig
         .then(() => {
-          configLoader.load().then((config) => {
+          configLoader.load(fakeLogger).then((config) => {
             executionCount.should.eql(1);
 
             config.should.have.property('smmtVincheckUri').eql(fakeEnvVariables.SMMT_API_URI);
@@ -116,7 +134,7 @@ describe('When SMMT config loader is called', () => {
         '../wrapper/envVariablesWrapper': fakeEnvVariables,
         './service': fakeServiceConfigWithDisabledKms,
       });
-      const loadedConfig = configLoader.load();
+      const loadedConfig = configLoader.load(fakeLogger);
 
       loadedConfig
         .then(() => {
@@ -144,7 +162,7 @@ describe('When SMMT config loader is called', () => {
         '../wrapper/envVariablesWrapper': fakeEnvVariables,
         './service': fakeServiceConfigWithEnabledKms,
       });
-      const loadedConfig = configLoader.load();
+      const loadedConfig = configLoader.load(fakeLogger);
 
       loadedConfig
         .then((config) => {

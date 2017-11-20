@@ -45,7 +45,8 @@
     "nodemon": "^1.12.1",
     "nyc": "^11.3.0",
     "proxyquire": "^1.8.0",
-    "retire": "^1.4.0"
+    "retire": "^1.4.0",
+    "sinon": "^4.1.2"
   },
   "nyc": {
     "check-coverage": true,
