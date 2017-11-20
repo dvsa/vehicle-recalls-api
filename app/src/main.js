@@ -13,7 +13,7 @@ let logger = loggerFactory.create();
 const app = express();
 app.disable('x-powered-by');
 
-const traceHeaderName = 'x-moth-trace-id';
+const traceHeaderName = 'x-mot-trace-id';
 let traceId;
 
 function* fetchRecall(make, vin, res) {
