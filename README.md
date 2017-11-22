@@ -21,9 +21,11 @@ GET /recalls?make=MakeToCheck&vin=vehicleVinNumber
 ### 400
 * Bad request -> vin or make is not provided
 
-### 403
+### 422
 * SMMT return information that provided VIN is invalid
 * SMMT return information that provided MAKE is invalid
+
+### 403
 * SMMT return unauthorized error (invalid SMMT api key -> env variable: SMMT_API_KEY)
 
 ### 500
