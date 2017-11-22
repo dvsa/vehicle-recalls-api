@@ -5,7 +5,7 @@ provider:
   runtime: nodejs6.10
   memorySize: 128
   stage: dev
-  region: eu-west-2
+  region: eu-west-1
   
   iamRoleStatements:
     - Effect: Allow

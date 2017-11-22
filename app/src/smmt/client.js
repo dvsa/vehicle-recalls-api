@@ -31,6 +31,7 @@ function generateRecallResponse(recall) {
     description: '',
     status: '',
     lastUpdate: '',
+    actionCode: '',
   };
 
   switch (recall.status) {
@@ -40,6 +41,10 @@ function generateRecallResponse(recall) {
       break;
     case responseCode.smmtInvalidMarque:
       logger.error({ context: { recall } }, 'Invalid SMMT marque.');
+      result.errors.push(recall.status_description);
+      break;
+    case responseCode.smmtInvalidVin:
+      logger.error({ context: { recall } }, 'Invalid SMMT vin.');
       result.errors.push(recall.status_description);
       break;
     case responseCode.smmtNoRecall:
@@ -60,6 +65,7 @@ function generateRecallResponse(recall) {
   result.description = recall.status_description;
   result.status = recall.vin_recall_status;
   result.lastUpdate = recall.last_update;
+  result.actionCode = recall.status;
 
   return result;
 }
