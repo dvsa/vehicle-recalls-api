@@ -127,15 +127,15 @@ describe('Recall lambda -> When recall check request was received', () => {
 
         chai.request(service.app)
           .get('/recalls')
-          .query({ make: 'RENAULT', vin: '123' })
+          .query({ make: 'RENAULT', vin: '1234567' })
           .end((err, res) => {
-            res.should.have.status(403);
+            res.should.have.status(422);
             res.should.have.header('content-type', 'application/json; charset=utf-8');
 
             res.body.should.be.an('object');
             res.body.should.have.property('errors').to.be.an('array');
             res.body.errors.should.have.lengthOf(1);
-            res.body.should.have.property('errors').eql(['Invalid VIN']);
+            res.body.should.have.property('errors').eql(['Bad Request - Invalid Vin']);
 
             done();
           });
@@ -191,7 +191,7 @@ describe('Recall lambda -> When recall check request was received', () => {
         .get('/recalls')
         .query({ make: 'UnknownBMW', vin: 'AIS123TEST1239607' })
         .end((err, res) => {
-          res.should.have.status(403);
+          res.should.have.status(422);
           res.should.have.header('content-type', 'application/json; charset=utf-8');
 
           res.body.should.be.an('object');

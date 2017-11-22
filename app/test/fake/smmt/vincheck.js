@@ -1,4 +1,4 @@
-const minVinLength = 5;
+const minVinLength = 10;
 const validSmmtKey = 'validSmmtKey';
 
 exports.validSmmtKey = validSmmtKey;
