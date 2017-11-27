@@ -9,6 +9,8 @@ let logger;
 let smmtApiKey;
 
 function getSmmtApiKey() {
+  logger.debug({ context: { ciphertext: env.SMMT_API_KEY } }, 'Attempting to decrypt ciphertext.');
+
   return kms.decrypt({
     CiphertextBlob: Buffer.from(env.SMMT_API_KEY, 'base64'),
   }).promise()
