@@ -20,6 +20,7 @@ provider:
     SERVICE_NAME: vehicle-recalls
     SERVICE_ENV: serverless
     RECALL_LOG_LEVEL: debug
+    KMS_ENABLED: true
 
 package:
   exclude:
