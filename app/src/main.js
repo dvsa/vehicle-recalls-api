@@ -62,7 +62,7 @@ function* fetchRecall(make, vin, res, logger) {
       const context = {
         make, vin, errors: [error],
       };
-      logger.error({ context }, 'SMMT communication issue.');
+      logger.error({ context }, 'Recall fetching from SMMT failed. SMMT communication issue.');
       res.status(500)
         .send({
           errors: context.errors,
