@@ -1,4 +1,4 @@
-const responseCode = require('./responseCode').code;
+const responseCode = require('./responseCode');
 
 let restClient;
 let config;

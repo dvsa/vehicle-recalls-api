@@ -1,4 +1,4 @@
-exports.code = {
+module.exports = {
   smmtInvalidApiKey: 401,
   smmtInvalidMarque: 402,
   smmtInvalidVin: 403,
