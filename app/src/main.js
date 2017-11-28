@@ -39,7 +39,7 @@ function processSmmtResponse(make, vin, recall, res, logger) {
     });
   } else if (recall.actionCode === responseCode.smmtInvalidVin) {
     const context = {
-      make, vin, errors: recall.errors,
+      make, vin, errors: recall.errors, metric: metricEvents.FAILURE,
     };
     logger.error({ context }, 'Recall fetching from SMMT failed. Invalid VIN.');
 
@@ -48,7 +48,7 @@ function processSmmtResponse(make, vin, recall, res, logger) {
     });
   } else {
     const context = {
-      make, vin, errors: recall.errors,
+      make, vin, errors: recall.errors, metric: metricEvents.FAILURE,
     };
     logger.error({ context }, 'Recall fetching from SMMT failed.');
 
@@ -87,9 +87,9 @@ app.get('/recalls', (req, res) => {
     co(fetchRecall(make, vin, res, logger));
   } else {
     const context = {
-      make, vin, errors: ['Make and vin query parameters are required'],
+      make, vin, errors: ['Make and vin query parameters are required'], metric: metricEvents.FAILURE,
     };
-    logger.error({ context }, 'Invalid request.');
+    logger.error({ context }, 'Recall fetching from SMMT failed. Invalid request.');
 
     res.status(400).send({
       errors: context.errors,
