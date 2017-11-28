@@ -7,7 +7,8 @@ const serviceConfig = require('./config/service');
 const smmtConfigLoader = require('./config/smmtConfigurationLoader');
 const smmtClientFactory = require('./smmt/client');
 const loggerFactory = require('./logger/createLogger');
-const responseCode = require('./smmt/responseCode').code;
+const responseCode = require('./smmt/responseCode');
+const metricEvents = require('./event/metricEvents');
 
 const app = express();
 app.disable('x-powered-by');
@@ -15,7 +16,12 @@ const traceHeaderName = 'x-mot-trace-id';
 
 function processSmmtResponse(make, vin, recall, res, logger) {
   if (recall.success) {
-    logger.info({ context: { make, vin, recall } }, 'Recall fetched successfully.');
+    logger.info({
+      context: {
+        make, vin, recall, metric: metricEvents.SUCCESS,
+      },
+    }, 'Recall fetched successfully.');
+
     res.status(200)
       .send({
         status_description: recall.description,
@@ -24,10 +30,10 @@ function processSmmtResponse(make, vin, recall, res, logger) {
       });
   } else if (recall.actionCode === responseCode.smmtInvalidMarque) {
     const context = {
-      make, vin, errors: recall.errors,
+      make, vin, errors: recall.errors, metric: metricEvents.FAILURE,
     };
-
     logger.error({ context }, 'Recall fetching from SMMT failed. Invalid make.');
+
     res.status(422).send({
       errors: recall.errors,
     });
@@ -35,8 +41,8 @@ function processSmmtResponse(make, vin, recall, res, logger) {
     const context = {
       make, vin, errors: recall.errors,
     };
-
     logger.error({ context }, 'Recall fetching from SMMT failed. Invalid VIN.');
+
     res.status(422).send({
       errors: recall.errors,
     });
@@ -44,8 +50,8 @@ function processSmmtResponse(make, vin, recall, res, logger) {
     const context = {
       make, vin, errors: recall.errors,
     };
-
     logger.error({ context }, 'Recall fetching from SMMT failed.');
+
     res.status(403).send({
       errors: recall.errors,
     });
@@ -60,9 +66,10 @@ function* fetchRecall(make, vin, res, logger) {
       processSmmtResponse(make, vin, recall, res, logger);
     }).catch((error) => {
       const context = {
-        make, vin, errors: [error],
+        make, vin, errors: [error], metric: metricEvents.FAILURE,
       };
       logger.error({ context }, 'Recall fetching from SMMT failed. SMMT communication issue.');
+
       res.status(500)
         .send({
           errors: context.errors,
@@ -73,6 +80,7 @@ function* fetchRecall(make, vin, res, logger) {
 app.get('/recalls', (req, res) => {
   const logger = loggerFactory.create(req.headers[traceHeaderName]);
   logger.debug({ context: req }, 'Received request.');
+
   const { make, vin } = req.query;
 
   if (make && vin) {
@@ -82,6 +90,7 @@ app.get('/recalls', (req, res) => {
       make, vin, errors: ['Make and vin query parameters are required'],
     };
     logger.error({ context }, 'Invalid request.');
+
     res.status(400).send({
       errors: context.errors,
     });
