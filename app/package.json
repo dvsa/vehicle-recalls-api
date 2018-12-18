@@ -24,28 +24,28 @@
     "url": "https://github.com/dvsa/vehicle-recalls-api.git"
   },
   "dependencies": {
-    "bunyan": "^1.8.12",
+    "bunyan": "^2.0.2",
     "co": "^4.6.0",
-    "express": "^4.16.2",
+    "express": "^4.16.4",
     "safe-json-stringify": "^1.0.4",
     "serverless-http": "^1.5.2",
-    "superagent": "^3.8.0"
+    "superagent": "^4.0.0"
   },
   "devDependencies": {
-    "aws-sdk": "^2.147.0",
+    "aws-sdk": "^2.342.0",
     "chai": "^4.1.2",
-    "chai-http": "^3.0.0",
-    "eslint": "^4.8.0",
+    "chai-http": "^4.2.0",
+    "eslint": "^4.19.0",
     "eslint-config-airbnb": "^16.0.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.4.0",
     "husky": "^0.14.3",
     "mocha": "^4.0.1",
-    "nodemon": "^1.12.1",
-    "nyc": "^11.3.0",
+    "nodemon": "^1.18.8",
+    "nyc": "^13.1.0",
     "proxyquire": "^1.8.0",
-    "retire": "^1.4.0",
+    "retire": "^2.0.0",
     "sinon": "^4.1.2"
   },
   "nyc": {
