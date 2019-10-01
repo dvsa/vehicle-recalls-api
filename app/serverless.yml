@@ -2,7 +2,7 @@ service: vehicle-recalls-api
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs10.x
   memorySize: 128
   stage: dev
   region: eu-west-1
