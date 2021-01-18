@@ -142,7 +142,7 @@ describe('Recall lambda -> When recall check request was received', () => {
       });
     });
 
-    it('and vehicle has outstanding recall then http 200 and message "Recall Outstanding" it is returned.', (done) => {
+    it('and vehicle has outstanding recall then http 200 and message "Recall outstanding" it is returned.', (done) => {
       const service = proxyquire('../src/main', { './config/smmtConfigurationLoader': correctSmmtConfig, superagent: fakeRestClient });
 
       chai.request(service.app)
@@ -155,7 +155,7 @@ describe('Recall lambda -> When recall check request was received', () => {
           res.should.have.header('content-type', 'application/json; charset=utf-8');
 
           res.body.should.be.an('object');
-          res.body.should.have.property('status_description').eql('Recall Outstanding');
+          res.body.should.have.property('status_description').eql('Recall outstanding');
           res.body.should.have.property('vin_recall_status').eql('BRAKES');
           res.body.should.have.property('last_update').eql('19022015');
 
@@ -176,7 +176,7 @@ describe('Recall lambda -> When recall check request was received', () => {
           res.should.have.header('content-type', 'application/json; charset=utf-8');
 
           res.body.should.be.an('object');
-          res.body.should.have.property('status_description').eql('No Recall Outstanding');
+          res.body.should.have.property('status_description').eql('No Recall outstanding');
           res.body.should.have.property('vin_recall_status').eql('');
           res.body.should.have.property('last_update').eql('19022015');
 
@@ -198,6 +198,25 @@ describe('Recall lambda -> When recall check request was received', () => {
           res.body.should.have.property('errors').to.be.an('array');
           res.body.errors.should.have.lengthOf(1);
           res.body.should.have.property('errors').eql(['Bad Request - Invalid Marque']);
+
+          done();
+        });
+    });
+
+    it('and SMMT is returning an unknown response then', (done) => {
+      const service = proxyquire('../src/main', { './config/smmtConfigurationLoader': correctSmmtConfig, superagent: fakeRestClient });
+
+      chai.request(service.app)
+        .get('/recalls')
+        .query({ make: 'UNKNOWNRES', vin: 'AISXXXTEST1239607' })
+        .end((err, res) => {
+          res.should.have.status(403);
+          res.should.have.header('content-type', 'application/json; charset=utf-8');
+
+          res.body.should.be.an('object');
+          res.body.should.have.property('errors').to.be.an('array');
+          res.body.errors.should.have.lengthOf(2);
+          res.body.should.have.property('errors').eql(['Unknown SMMT code: 500', 'unknown error']);
 
           done();
         });
