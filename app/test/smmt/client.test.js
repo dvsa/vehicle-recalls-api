@@ -120,7 +120,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
   });
 
   describe('and marque and vin is defined', () => {
-    it('and vehicle has outstanding recall then "Recall Outstanding" is returned.', (done) => {
+    it('and vehicle has outstanding recall then "Recall outstanding" is returned.', (done) => {
       const marque = 'RENAULT';
       const vin = 'AISXXXTEST1239617';
       const config = {
@@ -154,7 +154,7 @@ describe('SMMT Client -> When vincheck function was executed', () => {
       const result = smmtClient.vincheck(marque, vin);
       result.then((recall) => {
         recall.should.have.property('success').eql(true);
-        recall.should.have.property('description').eql('No Recall Outstanding');
+        recall.should.have.property('description').eql('No Recall outstanding');
         recall.should.have.property('status').eql('');
         recall.should.have.property('lastUpdate').eql('19022015');
 

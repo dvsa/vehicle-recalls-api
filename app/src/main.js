@@ -98,11 +98,10 @@ app.get('/recalls', (req, res) => {
 });
 
 exports.app = app;
-exports.handler = serverless(app, {
-  request: (item, event, context) => {
-    serviceConfig.functionName = context.functionName;
-    serviceConfig.functionVersion = context.functionVersion;
-
-    return item;
-  },
-});
+const handler = serverless(app);
+module.exports.handler = async (event, context) => {
+  const result = await handler(event, context);
+  serviceConfig.functionName = context.functionName;
+  serviceConfig.functionVersion = context.functionVersion;
+  return result;
+};
