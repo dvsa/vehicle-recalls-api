@@ -28,7 +28,7 @@ exports.vincheck = (apiKey, marque, vin) => {
     if (vin && vin.length >= minVinLength) {
       return {
         status: 201,
-        status_description: 'Recall Outstanding',
+        status_description: 'Recall outstanding',
         vin_recall_status: 'BRAKES',
         last_update: '19022015',
         vin,
@@ -38,12 +38,20 @@ exports.vincheck = (apiKey, marque, vin) => {
     if (vin && vin.length >= minVinLength) {
       return {
         status: 200,
-        status_description: 'No Recall Outstanding',
+        status_description: 'No Recall outstanding',
         vin_recall_status: '',
         last_update: '19022015',
         vin,
       };
     }
+  } else if (marque === 'UNKNOWNRES') {
+    return {
+      status: 500,
+      status_description: 'unknown error',
+      vin_recall_status: '',
+      last_update: '19022015',
+      vin,
+    };
   }
 
   return {
