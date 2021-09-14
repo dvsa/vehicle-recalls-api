@@ -62,7 +62,12 @@ function generateRecallResponse(recall) {
       break;
   }
 
-  result.description = recall.status_description;
+  if (recall.status_description === 'Recall outstanding') {
+    result.description = 'Recall Outstanding';
+  } else {
+    result.description = recall.status_description;
+  }
+
   result.status = recall.vin_recall_status;
   result.lastUpdate = recall.last_update;
   result.actionCode = recall.status;
@@ -73,11 +78,12 @@ function generateRecallResponse(recall) {
 function getSmmtResponseSuperagent(marque, vin) {
   return restClient
     .post(config.smmtVincheckUri)
-    .type('json')
+    .set('x-api-key', config.smmtApiKey)
+    .set('Accept', 'application/json')
+    .type('application/x-www-form-urlencoded')
     .send({
-      apikey: config.smmtApiKey,
       vin,
-      marque,
+      Marque: marque,
     })
     .then(response => generateRecallResponse(response.body));
 }
