@@ -2,11 +2,11 @@ service: vehicle-recalls-api
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   memorySize: 128
   stage: dev
   region: eu-west-1
-  
+
   iamRoleStatements:
     - Effect: Allow
       Action:
