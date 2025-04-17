@@ -34,37 +34,24 @@ const fakeServiceConfigWithEnabledKms = {
 let executionCount = 0;
 
 const fakeSuccessAwsSdk = {
-  KMS: function KMS() {
-    return {
-      decrypt: () => ({
-        promise: () => {
-          executionCount += 1;
-          return Promise.resolve({ Plaintext: fakeEnvVariables.SMMT_API_KEY });
-        },
-      }),
-    };
+  decrypt: () => {
+    executionCount += 1;
+    return Promise.resolve({ Plaintext: fakeEnvVariables.SMMT_API_KEY });
   },
 };
 
 const fakeFailureAwsSdk = {
-  KMS: function KMS() {
-    return {
-      decrypt: () => ({
-        promise: () => new Promise((resolve, reject) => {
-          reject(new Error({
-            message: 'Error from fake KMS',
-          }));
-        }),
-      }),
-    };
-  },
+  decrypt: () => Promise.reject(new Error({
+    message: 'Error from fake KMS',
+  })),
 };
+
 
 describe('When SMMT config loader is called', () => {
   describe('but application logger is not provided', () => {
     it('then error is thrown', () => {
       const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', {
-        '../wrapper/awsSdkWrapper': fakeSuccessAwsSdk,
+        '@aws-sdk/client-kms': fakeSuccessAwsSdk,
         '../wrapper/envVariablesWrapper': fakeEnvVariables,
         './service': fakeServiceConfigWithEnabledKms,
       });
@@ -78,7 +65,7 @@ describe('When SMMT config loader is called', () => {
   describe('and KMS responded correctly', () => {
     it('then SMMT uri and api key is returned', (done) => {
       const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', {
-        '../wrapper/awsSdkWrapper': fakeSuccessAwsSdk,
+        '@aws-sdk/client-kms': fakeSuccessAwsSdk,
         '../wrapper/envVariablesWrapper': fakeEnvVariables,
         './service': fakeServiceConfigWithEnabledKms,
       });
@@ -101,7 +88,7 @@ describe('When SMMT config loader is called', () => {
     it('then KMS will not be called', (done) => {
       executionCount = 0;
       const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', {
-        '../wrapper/awsSdkWrapper': fakeSuccessAwsSdk,
+        '@aws-sdk/client-kms': fakeSuccessAwsSdk,
         '../wrapper/envVariablesWrapper': fakeEnvVariables,
         './service': fakeServiceConfigWithEnabledKms,
       });
@@ -130,7 +117,7 @@ describe('When SMMT config loader is called', () => {
     it('then KMS will not be called', (done) => {
       executionCount = 0;
       const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', {
-        '../wrapper/awsSdkWrapper': fakeSuccessAwsSdk,
+        '@aws-sdk/client-kms': fakeSuccessAwsSdk,
         '../wrapper/envVariablesWrapper': fakeEnvVariables,
         './service': fakeServiceConfigWithDisabledKms,
       });
@@ -158,7 +145,7 @@ describe('When SMMT config loader is called', () => {
   describe('and KMS responded incorrectly', () => {
     it('then undefined is returned', (done) => {
       const configLoader = proxyquire('../../src/config/smmtConfigurationLoader', {
-        '../wrapper/awsSdkWrapper': fakeFailureAwsSdk,
+        '@aws-sdk/client-kms': fakeFailureAwsSdk,
         '../wrapper/envVariablesWrapper': fakeEnvVariables,
         './service': fakeServiceConfigWithEnabledKms,
       });
